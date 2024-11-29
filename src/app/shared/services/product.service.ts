@@ -4,6 +4,8 @@ import { Firestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, quer
 import { Observable, from, BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Product } from '../interfaces/product.interface';
+import { Interface } from 'node:readline';
+import { ProductMetrics } from '../interfaces/product.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -129,6 +131,24 @@ export class ProductService {
         });
         
         return totalVendido - totalPorRembolsar;
+      })
+    );
+  }
+  getProductMetrics(): Observable<ProductMetrics> {
+    const productsRef = collection(this.firestore, this.collectionName);
+    
+    return from(getDocs(productsRef)).pipe(
+      map(snapshot => {
+        const products = snapshot.docs.map(doc => doc.data() as Product);
+        
+        return {
+          totalProducts: products.length,
+          pendingRefunds: products.filter(p => !p.dineroRembolsado).length,
+          completedRefunds: products.filter(p => p.dineroRembolsado > 0).length,
+          averagePrice: products.length > 0 
+            ? products.reduce((acc, curr) => acc + curr.precioCompra, 0) / products.length 
+            : 0
+        };
       })
     );
   }

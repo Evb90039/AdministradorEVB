@@ -10,3 +10,10 @@ export interface Product {
     resena: boolean;
     contacto: string;
   }
+
+  export interface ProductMetrics {
+    totalProducts: number;
+    pendingRefunds: number;
+    completedRefunds: number;
+    averagePrice: number;
+  }

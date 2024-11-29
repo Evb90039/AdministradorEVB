@@ -46,7 +46,9 @@
               <div class="value">
                 {{ visibleBalances['reembolsos'] ? (faltaRembolsar | number:'1.2-2') + ' MXN' : '****' }}
               </div>
-              <div class="extra-info">3 pendientes</div>
+              <div class="extra-info">
+                <small>{{ productMetrics.pendingRefunds }} pendientes</small>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
+import { ProductMetrics } from '../../interfaces/product.interface';
 import { catchError } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
 
@@ -19,6 +20,14 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
   totalVendido: number = 0;
   gananciaTotal: number = 0;
   currentSlide: number = 0;
+  lastUpdateTime: Date | null = null;
+  productMetrics: ProductMetrics = {
+    totalProducts: 0,
+    pendingRefunds: 0,
+    completedRefunds: 0,
+    averagePrice: 0
+  };
+
   visibleBalances: { [key: string]: boolean } = {
     'compras': true,
     'reembolsos': true,
@@ -34,6 +43,7 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.loadFaltaRembolsar();
         this.loadTotalVendido();
         this.loadGananciaTotal();
+        this.loadMetrics();
       });
   }
 
@@ -42,6 +52,7 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadFaltaRembolsar();
     this.loadTotalVendido();
     this.loadGananciaTotal();
+    this.loadMetrics();
   }
 
   ngAfterViewInit(): void {
@@ -51,6 +62,25 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+  }
+
+  private loadMetrics(): void {
+    this.productService.getProductMetrics()
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar las métricas:', error);
+          return of({
+            totalProducts: 0,
+            pendingRefunds: 0,
+            completedRefunds: 0,
+            averagePrice: 0
+          });
+        })
+      )
+      .subscribe(metrics => {
+        this.productMetrics = metrics;
+        this.lastUpdateTime = new Date();
+      });
   }
 
   toggleBalance(key: string): void {
@@ -82,6 +112,7 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.faltaRembolsar = total;
       });
   }
+
   private loadTotalVendido(): void {
     this.productService.calcularVendido()
       .pipe(
@@ -94,6 +125,7 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.totalVendido = total;
       });
   }
+
   private loadGananciaTotal(): void {
     this.productService.calcularGananciaTotal()
       .pipe(
@@ -106,6 +138,7 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
         this.gananciaTotal = total;
       });
   }
+
   onScroll(): void {
     if (!this.cardsSlider) return;
     
