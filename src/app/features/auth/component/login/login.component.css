@@ -1,0 +1,58 @@
+/* login.component.css */
+:host {
+    display: block;
+  }
+  
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+  .card {
+    transition: transform 0.2s;
+  }
+  
+  .logo {
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  .form-control {
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+  }
+  
+  .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  }
+  
+  .btn-primary {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+  
+  .form-floating label {
+    padding-left: 1rem;
+  }
+  
+  .form-floating>.form-control {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+  }
+  
+  /* Animación suave para el mensaje de error */
+  .alert {
+    animation: fadeIn 0.3s ease-in;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }

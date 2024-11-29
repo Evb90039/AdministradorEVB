@@ -1,0 +1,169 @@
+/* nav.component.css */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 260px;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+.responsive-logo {
+  max-width: 100%;
+  height: auto;
+  /* Si quieres establecer un ancho máximo específico */
+  max-height: 50px; /* Ajusta este valor según tus necesidades */
+}
+.brand-section {
+  height: 60px;
+  padding: 0 1rem;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.brand-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navbar-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+.responsive-logo {
+  max-height: 40px;
+  width: auto;
+}
+
+@media screen and (max-width: 991.98px) {
+  .responsive-logo {
+    max-height: 50px;
+  }
+}
+.nav-section {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+}
+
+.main-nav {
+  padding: 1rem 0;
+}
+
+.nav-link {
+  padding: 0.75rem 1.5rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-link i {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+}
+
+.nav-link:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.nav-link.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.user-nav {
+  border-top: 1px solid #dee2e6;
+  padding: 1rem 0;
+  margin-top: auto;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 991.98px) {
+  .sidebar {
+    width: 70px;
+  }
+
+  .sidebar.expanded {
+    width: 260px;
+  }
+
+  .navbar-brand {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-link span {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar.expanded .nav-link span {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .sidebar.expanded .navbar-brand {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 767.98px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    bottom: auto;
+  }
+
+  .nav-section {
+    display: none;
+    height: calc(100vh - 60px);
+  }
+
+  .nav-section.show {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-link span {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navbar-brand {
+    display: block;
+  }
+}
