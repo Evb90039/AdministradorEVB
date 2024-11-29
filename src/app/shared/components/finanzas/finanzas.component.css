@@ -1,8 +1,47 @@
 .metric-card {
   border: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
   margin: 0.5rem;
+  min-height: 120px;
+  display: flex;
+  width: 100%;
+  background: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.metric-card:hover .icon-container {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.metric-card:hover .value {
+  color: #000;
+}
+
+.metric-card:hover .label {
+  color: #444;
+}
+
+.card-body {
+  padding: 1.25rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.metric-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  min-height: 80px;
 }
 
 .icon-container {
@@ -13,22 +52,67 @@
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
-.bg-purple { background-color: #8B80F9; }
-.bg-blue { background-color: #5ED0E4; }
-.bg-green { background-color: #5EDAB4; }
-.bg-red { background-color: #FF8A8A; }
+.metric-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+  min-width: 0;
+  flex: 1;
+}
 
-.card-subtitle {
+.label {
+  font-size: 0.875rem;
   color: #666;
   font-weight: 500;
-  font-size: 0.875rem;
+  line-height: 1;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  transition: color 0.3s ease;
 }
 
-.card-title {
+.value {
+  font-size: 1.25rem;
   color: #333;
   font-weight: 600;
+  line-height: 1;
+  margin-top: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.extra-info {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.bg-purple { 
+  background-color: #8B80F9; 
+}
+
+.bg-blue { 
+  background-color: #5ED0E4; 
+}
+
+.bg-green { 
+  background-color: #5EDAB4; 
+}
+
+.bg-red { 
+  background-color: #FF8A8A; 
+}
+
+.bi {
+  font-size: 1.5rem;
+}
+
+.slide {
+  height: 100%;
+  display: flex;
 }
 
 .pagination-dots {
@@ -87,13 +171,16 @@
 
   .slide {
     flex: 0 0 100%;
-    scroll-snap-align: start;  /* Cambiado de 'center' a 'start' */
+    scroll-snap-align: start;
     padding: 0 1rem;
-    width: 100%;              /* Aseguramos que tome el ancho completo */
+    width: 100%;
   }
 
   .metric-card {
     width: 100%;
     margin: 0;
   }
+}
+i.bi.bi-eye-fill,i.bi.bi-eye-slash-fill {
+  color: #00000082;
 }

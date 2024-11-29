@@ -16,6 +16,12 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
   
   totalCompras: number = 0;
   currentSlide: number = 0;
+  visibleBalances: { [key: string]: boolean } = {
+    'compras': true,
+    'reembolsos': true,
+    'vendido': true,
+    'ganancia': true
+  };
   private subscription: Subscription;
 
   constructor(private productService: ProductService) {
@@ -31,7 +37,6 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.cardsSlider) {
-      // Inicializar el observador de scroll
       this.cardsSlider.nativeElement.addEventListener('scroll', () => {
         this.onScroll();
       });
@@ -42,12 +47,15 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    // Remover el event listener al destruir el componente
     if (this.cardsSlider) {
       this.cardsSlider.nativeElement.removeEventListener('scroll', () => {
         this.onScroll();
       });
     }
+  }
+
+  toggleBalance(key: string): void {
+    this.visibleBalances[key] = !this.visibleBalances[key];
   }
 
   private loadTotalCompras(): void {
@@ -68,8 +76,6 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
       const slider = this.cardsSlider.nativeElement;
       const scrollLeft = slider.scrollLeft;
       const slideWidth = slider.clientWidth;
-      
-      // Calculamos el índice actual basado en el scroll
       this.currentSlide = Math.round(scrollLeft / slideWidth);
     }
   }
@@ -79,7 +85,6 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
       this.currentSlide = index;
       const slider = this.cardsSlider.nativeElement;
       const slideWidth = slider.clientWidth;
-      
       slider.scrollTo({
         left: slideWidth * index,
         behavior: 'smooth'
