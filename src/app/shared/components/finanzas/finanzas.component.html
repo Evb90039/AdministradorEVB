@@ -44,7 +44,7 @@
                    (click)="toggleBalance('reembolsos')"></i>
               </div>
               <div class="value">
-                {{ visibleBalances['reembolsos'] ? '2.757,00 MXN' : '****' }}
+                {{ visibleBalances['reembolsos'] ? (faltaRembolsar | number:'1.2-2') + ' MXN' : '****' }}
               </div>
               <div class="extra-info">3 pendientes</div>
             </div>
@@ -70,7 +70,7 @@
                    (click)="toggleBalance('vendido')"></i>
               </div>
               <div class="value">
-                {{ visibleBalances['vendido'] ? '0,00 MXN' : '****' }}
+                {{ visibleBalances['vendido'] ? (totalVendido | number:'1.2-2') + ' MXN' : '****' }}
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@
                    (click)="toggleBalance('ganancia')"></i>
               </div>
               <div class="value">
-                {{ visibleBalances['ganancia'] ? '$0.00' : '****' }}
+                {{ visibleBalances['ganancia'] ? (gananciaTotal | number:'1.2-2') + ' MXN' : '****' }}
               </div>
             </div>
           </div>

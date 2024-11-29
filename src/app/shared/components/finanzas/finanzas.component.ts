@@ -15,6 +15,9 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('cardsslider') cardsSlider!: ElementRef;
   
   totalCompras: number = 0;
+  faltaRembolsar: number = 0;
+  totalVendido: number = 0;
+  gananciaTotal: number = 0;
   currentSlide: number = 0;
   visibleBalances: { [key: string]: boolean } = {
     'compras': true,
@@ -28,15 +31,20 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subscription = this.productService.productsUpdated$
       .subscribe(() => {
         this.loadTotalCompras();
+        this.loadFaltaRembolsar();
+        this.loadTotalVendido();
+        this.loadGananciaTotal();
       });
   }
 
   ngOnInit(): void {
     this.loadTotalCompras();
+    this.loadFaltaRembolsar();
+    this.loadTotalVendido();
+    this.loadGananciaTotal();
   }
 
   ngAfterViewInit(): void {
-    // No es necesario agregar event listener adicional ya que usamos (scroll) en el template
   }
 
   ngOnDestroy(): void {
@@ -62,6 +70,42 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  private loadFaltaRembolsar(): void {
+    this.productService.calcularFaltaRembolsar()
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar el total por rembolsar:', error);
+          return of(0);
+        })
+      )
+      .subscribe(total => {
+        this.faltaRembolsar = total;
+      });
+  }
+  private loadTotalVendido(): void {
+    this.productService.calcularVendido()
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar el total de compras:', error);
+          return of(0);
+        })
+      )
+      .subscribe(total => {
+        this.totalVendido = total;
+      });
+  }
+  private loadGananciaTotal(): void {
+    this.productService.calcularGananciaTotal()
+      .pipe(
+        catchError(error => {
+          console.error('Error al cargar la ganancia total:', error);
+          return of(0);
+        })
+      )
+      .subscribe(total => {
+        this.gananciaTotal = total;
+      });
+  }
   onScroll(): void {
     if (!this.cardsSlider) return;
     
@@ -69,13 +113,9 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
     const cardWidth = slider.offsetWidth;
     const scrollPosition = slider.scrollLeft;
     
-    // Calculamos el índice basado en el scroll y el ancho de la tarjeta
     let index = Math.round(scrollPosition / cardWidth);
-    
-    // Nos aseguramos que el índice esté entre 0 y 3
     index = Math.max(0, Math.min(3, index));
     
-    // Si estamos cerca del final, forzamos el último índice
     if (Math.abs(slider.scrollWidth - (scrollPosition + slider.offsetWidth)) < 5) {
       index = 3;
     }

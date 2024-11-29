@@ -84,4 +84,52 @@ export class ProductService {
       )
     );
   }
+    // Calcular el total de compras
+
+    calcularFaltaRembolsar(): Observable<number> {
+      const productsRef = collection(this.firestore, this.collectionName);
+      
+      return from(getDocs(productsRef)).pipe(
+        map(snapshot => 
+          snapshot.docs.reduce((total, doc) => {
+            const product = doc.data() as Product;
+            // Si dineroRembolsado es 0 o no existe, suma el precio de compra
+            return (!product.dineroRembolsado) ? total + product.precioCompra : total;
+          }, 0)
+        )
+      );
+    }
+    // Calcular el total de Vendido
+  calcularVendido(): Observable<number> {
+    const productsRef = collection(this.firestore, this.collectionName);
+    
+    return from(getDocs(productsRef)).pipe(
+      map(snapshot => 
+        snapshot.docs.reduce((total, doc) => {
+          const product = doc.data() as Product;
+          return total + (product.ventaPublico || 0);
+        }, 0)
+      )
+    );
+  }
+  calcularGananciaTotal(): Observable<number> {
+    const productsRef = collection(this.firestore, this.collectionName);
+    
+    return from(getDocs(productsRef)).pipe(
+      map(snapshot => {
+        let totalVendido = 0;
+        let totalPorRembolsar = 0;
+        
+        snapshot.docs.forEach(doc => {
+          const product = doc.data() as Product;
+          totalVendido += (product.ventaPublico || 0);
+          if (!product.dineroRembolsado) {
+            totalPorRembolsar += product.precioCompra;
+          }
+        });
+        
+        return totalVendido - totalPorRembolsar;
+      })
+    );
+  }
 }
