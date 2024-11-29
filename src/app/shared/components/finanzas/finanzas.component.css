@@ -1,76 +1,70 @@
-
 .metric-card {
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  margin: 0.5rem;
+}
+
+.icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.bg-purple { background-color: #8B80F9; }
+.bg-blue { background-color: #5ED0E4; }
+.bg-green { background-color: #5EDAB4; }
+.bg-red { background-color: #FF8A8A; }
+
+.card-subtitle {
+  color: #666;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.card-title {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Desktop Grid Layout */
+@media (min-width: 768px) {
+  .cards-slider {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem;
   }
-  
-  .metric-card:hover {
-    transform: translateY(-2px);
-  }
-  
-  .icon-container {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+}
+
+/* Mobile Slider Layout */
+@media (max-width: 767px) {
+  .cards-slider {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 1rem 0;
   }
-  
-  .bg-purple {
-    background-color: #8B80F9;
+
+  .cards-slider::-webkit-scrollbar {
+    display: none;
   }
-  
-  .bg-blue {
-    background-color: #5ED0E4;
+
+  .slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    padding: 0 1rem;
   }
-  
-  .bg-green {
-    background-color: #5EDAB4;
+
+  .metric-card {
+    width: 100%;
+    margin: 0;
   }
-  
-  .bg-red {
-    background-color: #FF8A8A;
-  }
-  
-  .card-subtitle {
-    color: #666;
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
-  
-  .card-title {
-    color: #333;
-    font-weight: 600;
-  }
-  
-  /* Mobile carousel styles */
-  @media (max-width: 767px) {
-    .cards-container {
-      display: flex;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
-      gap: 1rem;
-      padding: 1rem;
-      scroll-snap-type: x mandatory;
-    }
-  
-    .cards-container::-webkit-scrollbar {
-      display: none; /* Chrome, Safari, Opera */
-    }
-  
-    .col-md-6 {
-      flex: 0 0 85%;
-      max-width: 85%;
-      scroll-snap-align: start;
-    }
-  
-    .metric-card {
-      margin-bottom: 0;
-    }
-  }
+}
