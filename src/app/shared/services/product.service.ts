@@ -1,8 +1,8 @@
 // src/app/shared/services/product.service.ts
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy} from '@angular/fire/firestore';
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, from, BehaviorSubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Product } from '../interfaces/product.interface';
 
 @Injectable({
@@ -10,6 +10,8 @@ import { Product } from '../interfaces/product.interface';
 })
 export class ProductService {
   private readonly collectionName = 'products';
+  private productsUpdated = new BehaviorSubject<void>(undefined);
+  productsUpdated$ = this.productsUpdated.asObservable();
 
   constructor(private firestore: Firestore) {}
 
@@ -28,9 +30,11 @@ export class ProductService {
       map(docRef => ({
         ...productData,
         id: docRef.id
-      }))
+      })),
+      tap(() => this.productsUpdated.next())
     );
   }
+
   // Obtener todos los productos
   getProducts(): Observable<Product[]> {
     const productsRef = collection(this.firestore, this.collectionName);
@@ -45,6 +49,7 @@ export class ProductService {
       )
     );
   }
+
   // Actualizar un producto
   updateProduct(id: string, product: Partial<Product>): Observable<void> {
     const productRef = doc(this.firestore, `${this.collectionName}/${id}`);
@@ -53,12 +58,30 @@ export class ProductService {
       updatedAt: new Date()
     };
     
-    return from(updateDoc(productRef, updateData));
+    return from(updateDoc(productRef, updateData)).pipe(
+      tap(() => this.productsUpdated.next())
+    );
   }
 
   // Eliminar un producto
   deleteProduct(id: string): Observable<void> {
     const productRef = doc(this.firestore, `${this.collectionName}/${id}`);
-    return from(deleteDoc(productRef));
+    return from(deleteDoc(productRef)).pipe(
+      tap(() => this.productsUpdated.next())
+    );
+  }
+
+  // Calcular el total de compras
+  getTotalCompras(): Observable<number> {
+    const productsRef = collection(this.firestore, this.collectionName);
+    
+    return from(getDocs(productsRef)).pipe(
+      map(snapshot => 
+        snapshot.docs.reduce((total, doc) => {
+          const product = doc.data() as Product;
+          return total + (product.precioCompra || 0);
+        }, 0)
+      )
+    );
   }
 }

@@ -57,16 +57,6 @@ export class ProductModalComponent implements OnInit {
     this.productForm.patchValue({
       fechaAlta: new Date().toISOString().split('T')[0]
     });
-
-    // Add validation for ventaPublico being greater than precioCompra
-    this.productForm.get('ventaPublico')?.valueChanges.subscribe(value => {
-      const precioCompra = this.productForm.get('precioCompra')?.value;
-      if (precioCompra && value <= precioCompra) {
-        this.productForm.get('ventaPublico')?.setErrors({ 
-          priceTooLow: true 
-        });
-      }
-    });
   }
 
   onSubmit() {
@@ -113,7 +103,6 @@ export class ProductModalComponent implements OnInit {
         return 'Formato inválido';
       }
       if (control.errors['min']) return 'El valor debe ser mayor a 0';
-      if (control.errors['priceTooLow']) return 'El precio de venta debe ser mayor al precio de compra';
     }
     return '';
   }

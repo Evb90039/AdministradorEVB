@@ -1,0 +1,76 @@
+
+.metric-card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+  }
+  
+  .metric-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .icon-container {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .bg-purple {
+    background-color: #8B80F9;
+  }
+  
+  .bg-blue {
+    background-color: #5ED0E4;
+  }
+  
+  .bg-green {
+    background-color: #5EDAB4;
+  }
+  
+  .bg-red {
+    background-color: #FF8A8A;
+  }
+  
+  .card-subtitle {
+    color: #666;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+  
+  .card-title {
+    color: #333;
+    font-weight: 600;
+  }
+  
+  /* Mobile carousel styles */
+  @media (max-width: 767px) {
+    .cards-container {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      gap: 1rem;
+      padding: 1rem;
+      scroll-snap-type: x mandatory;
+    }
+  
+    .cards-container::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+  
+    .col-md-6 {
+      flex: 0 0 85%;
+      max-width: 85%;
+      scroll-snap-align: start;
+    }
+  
+    .metric-card {
+      margin-bottom: 0;
+    }
+  }
