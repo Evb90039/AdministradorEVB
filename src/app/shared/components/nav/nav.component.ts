@@ -2,7 +2,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NgbCollapse, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductModalComponent } from '../product-modal/product-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -14,9 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     RouterModule,
-    NgbCollapse,
     ReactiveFormsModule,
-    ProductModalComponent // Importamos el componente del modal
   ]
 })
 export class NavComponent {
