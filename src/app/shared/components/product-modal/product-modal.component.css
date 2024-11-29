@@ -1,0 +1,79 @@
+:host {
+    display: block;
+  }
+  
+  .modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+  }
+  
+  .form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-group-text {
+    background-color: #f8f9fa;
+  }
+  
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .modal-body {
+      padding: 1rem;
+    }
+  
+    .row {
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+    }
+  
+    .col-md-4,
+    .col-md-6,
+    .col-12 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  
+    .form-label {
+      font-size: 0.9rem;
+    }
+  
+    .btn {
+      width: 100%;
+      margin: 0.25rem 0;
+    }
+  
+    .modal-footer {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  
+  /* Touch-friendly improvements */
+  @media (hover: none) {
+    .form-control,
+    .form-select,
+    .btn {
+      min-height: 44px; /* Better touch targets */
+    }
+  
+    .form-check-input {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  
+    .form-check-label {
+      padding-left: 0.5rem;
+      line-height: 1.5rem;
+    }
+  }

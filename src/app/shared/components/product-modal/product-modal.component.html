@@ -1,115 +1,169 @@
-<!-- src/app/shared/components/product-modal/product-modal.component.html -->
-<div class="modal-header">
-    <h4 class="modal-title">Nuevo Producto</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title" id="nuevo-producto">Nuevo Producto</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
   </div>
-  
+
   <div class="modal-body">
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="fechaAlta" class="form-label">Fecha Alta</label>
-        <input 
-          type="date" 
-          class="form-control" 
-          id="fechaAlta"
-          formControlName="fechaAlta">
-      </div>
-  
-      <div class="mb-3">
-        <label for="nombreVendedor" class="form-label">Nombre del Vendedor</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="nombreVendedor"
-          formControlName="nombreVendedor"
-          [class.is-invalid]="productForm.get('nombreVendedor')?.invalid && productForm.get('nombreVendedor')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="nombreProducto" class="form-label">Nombre del Producto</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="nombreProducto"
-          formControlName="nombreProducto"
-          [class.is-invalid]="productForm.get('nombreProducto')?.invalid && productForm.get('nombreProducto')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="enlace" class="form-label">Enlace</label>
-        <input 
-          type="url" 
-          class="form-control" 
-          id="enlace"
-          formControlName="enlace"
-          [class.is-invalid]="productForm.get('enlace')?.invalid && productForm.get('enlace')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="precioCompra" class="form-label">Precio de Compra</label>
-        <input 
-          type="number" 
-          class="form-control" 
-          id="precioCompra"
-          formControlName="precioCompra"
-          [class.is-invalid]="productForm.get('precioCompra')?.invalid && productForm.get('precioCompra')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="dineroRembolsado" class="form-label">Dinero Rembolsado</label>
-        <input 
-          type="number" 
-          class="form-control" 
-          id="dineroRembolsado"
-          formControlName="dineroRembolsado"
-          [class.is-invalid]="productForm.get('dineroRembolsado')?.invalid && productForm.get('dineroRembolsado')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="ventaPublico" class="form-label">Venta al Público</label>
-        <input 
-          type="number" 
-          class="form-control" 
-          id="ventaPublico"
-          formControlName="ventaPublico"
-          [class.is-invalid]="productForm.get('ventaPublico')?.invalid && productForm.get('ventaPublico')?.touched">
-      </div>
-  
-      <div class="mb-3">
-        <label for="tienda" class="form-label">Tienda</label>
-        <select 
-          class="form-select" 
-          id="tienda"
-          formControlName="tienda"
-          [class.is-invalid]="productForm.get('tienda')?.invalid && productForm.get('tienda')?.touched">
-          <option value="">Seleccione una tienda</option>
-          <option value="AMAZON">Amazon</option>
-          <option value="MERCADO_LIBRE">Mercado Libre</option>
-        </select>
-      </div>
-  
-      <div class="mb-3 form-check">
-        <input 
-          type="checkbox" 
-          class="form-check-input" 
-          id="resena"
-          formControlName="resena">
-        <label class="form-check-label" for="resena">Reseña</label>
-      </div>
-  
-      <div class="mb-3">
-        <label for="contacto" class="form-label">Contacto</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          id="contacto"
-          formControlName="contacto"
-          [class.is-invalid]="productForm.get('contacto')?.invalid && productForm.get('contacto')?.touched">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="needs-validation">
+      <div class="row g-3">
+        <!-- Fecha Alta -->
+        <div class="col-md-6">
+          <label for="fechaAlta" class="form-label">Fecha Alta</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            id="fechaAlta"
+            formControlName="fechaAlta"
+            [class.is-invalid]="productForm.get('fechaAlta')?.invalid && productForm.get('fechaAlta')?.touched">
+          <div class="invalid-feedback">
+            La fecha es requerida
+          </div>
+        </div>
+
+        <!-- Nombre del Vendedor -->
+        <div class="col-md-6">
+          <label for="nombreVendedor" class="form-label">Nombre del Vendedor</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="nombreVendedor"
+            formControlName="nombreVendedor"
+            [class.is-invalid]="productForm.get('nombreVendedor')?.invalid && productForm.get('nombreVendedor')?.touched">
+          <div class="invalid-feedback">
+            El nombre del vendedor es requerido
+          </div>
+        </div>
+
+        <!-- Nombre del Producto -->
+        <div class="col-12">
+          <label for="nombreProducto" class="form-label">Nombre del Producto</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="nombreProducto"
+            formControlName="nombreProducto"
+            [class.is-invalid]="productForm.get('nombreProducto')?.invalid && productForm.get('nombreProducto')?.touched">
+          <div class="invalid-feedback">
+            El nombre del producto es requerido
+          </div>
+        </div>
+
+        <!-- Enlace -->
+        <div class="col-12">
+          <label for="enlace" class="form-label">Enlace</label>
+          <input 
+            type="url" 
+            class="form-control" 
+            id="enlace"
+            formControlName="enlace"
+            [class.is-invalid]="productForm.get('enlace')?.invalid && productForm.get('enlace')?.touched">
+          <div class="invalid-feedback">
+            Ingrese una URL válida
+          </div>
+        </div>
+
+        <!-- Precio de Compra -->
+        <div class="col-md-4">
+          <label for="precioCompra" class="form-label">Precio de Compra</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="precioCompra"
+              formControlName="precioCompra"
+              [class.is-invalid]="productForm.get('precioCompra')?.invalid && productForm.get('precioCompra')?.touched">
+            <div class="invalid-feedback">
+              Ingrese un precio válido
+            </div>
+          </div>
+        </div>
+
+        <!-- Dinero Rembolsado -->
+        <div class="col-md-4">
+          <label for="dineroRembolsado" class="form-label">Dinero Rembolsado</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="dineroRembolsado"
+              formControlName="dineroRembolsado"
+              [class.is-invalid]="productForm.get('dineroRembolsado')?.invalid && productForm.get('dineroRembolsado')?.touched">
+            <div class="invalid-feedback">
+              Ingrese un monto válido
+            </div>
+          </div>
+        </div>
+
+        <!-- Venta al Público -->
+        <div class="col-md-4">
+          <label for="ventaPublico" class="form-label">Venta al Público</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="ventaPublico"
+              formControlName="ventaPublico"
+              [class.is-invalid]="productForm.get('ventaPublico')?.invalid && productForm.get('ventaPublico')?.touched">
+            <div class="invalid-feedback">
+              Ingrese un precio válido
+            </div>
+          </div>
+        </div>
+
+        <!-- Tienda -->
+        <div class="col-md-6">
+          <label for="tienda" class="form-label">Tienda</label>
+          <select 
+            class="form-select" 
+            id="tienda"
+            formControlName="tienda"
+            [class.is-invalid]="productForm.get('tienda')?.invalid && productForm.get('tienda')?.touched">
+            <option value="">Seleccione una tienda</option>
+            <option value="amazon">Amazon</option>
+            <option value="mercadolibre">Mercado Libre</option>
+          </select>
+          <div class="invalid-feedback">
+            Seleccione una tienda
+          </div>
+        </div>
+
+        <!-- Contacto -->
+        <div class="col-md-6">
+          <label for="contacto" class="form-label">Contacto</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="contacto"
+            formControlName="contacto"
+            [class.is-invalid]="productForm.get('contacto')?.invalid && productForm.get('contacto')?.touched">
+          <div class="invalid-feedback">
+            El contacto es requerido
+          </div>
+        </div>
+
+        <!-- Reseña -->
+        <div class="col-12">
+          <div class="form-check">
+            <input 
+              type="checkbox" 
+              class="form-check-input" 
+              id="resena"
+              formControlName="resena">
+            <label class="form-check-label" for="resena">Reseña</label>
+          </div>
+        </div>
       </div>
     </form>
   </div>
-  
+
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('Cancel click')">Cancelar</button>
-    <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="!productForm.valid">Guardar</button>
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmit()" [disabled]="productForm.invalid">
+      Guardar
+    </button>
   </div>
+</div>
