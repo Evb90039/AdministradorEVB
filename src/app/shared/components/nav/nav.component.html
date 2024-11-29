@@ -1,61 +1,50 @@
 <!-- nav.component.html -->
 <div class="sidebar" [class.expanded]="!isMenuCollapsed">
-<!-- Logo/Brand section -->
-<div class="brand-section">
-  <button class="menu-toggle" type="button" (click)="toggleMenu()">
-    <i class="bi" [ngClass]="isMenuCollapsed ? 'bi-list' : 'bi-x'"></i>
-  </button>
-  <div class="brand-container">
-    <a class="navbar-brand">
-      <img src="assets/logo/logotipo.png" alt="Logo" class="responsive-logo">
-    </a>
+  <!-- Logo/Brand section -->
+  <div class="brand-section">
+    <button class="menu-toggle" type="button" (click)="toggleMenu()">
+      <i class="bi" [ngClass]="isMenuCollapsed ? 'bi-list' : 'bi-x'"></i>
+    </button>
+    <div class="brand-container">
+      <a class="navbar-brand">
+        <img src="assets/logo/logotipo.png" alt="Logo" class="responsive-logo">
+      </a>
+    </div>
   </div>
-</div>
 
-  <!-- Navigation links -->
   <div class="nav-section" [ngClass]="{'show': !isMenuCollapsed}">
-    <!-- Main navigation -->
-    <ul class="nav flex-column main-nav">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/home" routerLinkActive="active">
-          <i class="bi bi-house"></i>
-          <span>Inicio</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/productos" routerLinkActive="active">
-          <i class="bi bi-box"></i>
-          <span>Productos</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/servicios" routerLinkActive="active">
-          <i class="bi bi-gear"></i>
-          <span>Servicios</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/contacto" routerLinkActive="active">
-          <i class="bi bi-envelope"></i>
-          <span>Contacto</span>
-        </a>
-      </li>
-    </ul>
+    <div class="main-nav">
+      <a class="nav-link" routerLink="/home" routerLinkActive="active">
+        <i class="fas fa-home"></i>
+        <span>Inicio</span>
+      </a>
+      
+      <!-- Modificamos el enlace de productos para abrir el modal -->
+      <a class="nav-link" (click)="openProductModal()" style="cursor: pointer;">
+        <i class="fas fa-box"></i>
+        <span>Productos</span>
+      </a>
+      
+      <a class="nav-link" routerLink="/servicios" routerLinkActive="active">
+        <i class="fas fa-cogs"></i>
+        <span>Servicios</span>
+      </a>
+      
+      <a class="nav-link" routerLink="/contacto" routerLinkActive="active">
+        <i class="fas fa-envelope"></i>
+        <span>Contacto</span>
+      </a>
+    </div>
 
-    <!-- User section -->
-    <ul class="nav flex-column user-nav">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/perfil">
-          <i class="bi bi-person"></i>
-          <span>Mi Perfil</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/login">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Salir</span>
-        </a>
-      </li>
-    </ul>
+    <div class="user-nav">
+      <a class="nav-link" routerLink="/perfil">
+        <i class="fas fa-user"></i>
+        <span>Mi Perfil</span>
+      </a>
+      <a class="nav-link" routerLink="/login">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Salir</span>
+      </a>
+    </div>
   </div>
 </div>
