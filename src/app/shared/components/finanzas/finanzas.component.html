@@ -1,20 +1,22 @@
 <div class="container-fluid mt-4">
-  <h1>Estadisticas</h1>
+  <h1 class="mb-4">Estadisticas</h1>
 
   <div class="cards-slider" #cardsslider (scroll)="onScroll()">
+    <!-- Compras Totales Card -->
     <div class="slide">
       <div class="card metric-card">
-        <div class="card-body">
+        <div class="card-body h-100">
           <div class="metric-content">
             <div class="icon-container bg-purple">
               <i class="bi bi-cart-fill"></i>
             </div>
             <div class="metric-info">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="label">Compras Totales</div>
-                <button class="btn btn-link p-0" (click)="toggleBalance('compras')">
-                  <i class="bi" [ngClass]="visibleBalances['compras'] ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
-                </button>
+              <div class="label-container">
+                <span class="label">Compras Totales</span>
+                <i class="bi toggle-visibility" 
+                   [class.bi-eye-fill]="visibleBalances['compras']" 
+                   [class.bi-eye-slash-fill]="!visibleBalances['compras']"
+                   (click)="toggleBalance('compras')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['compras'] ? (totalCompras | number:'1.2-2') + ' MXN' : '****' }}
@@ -25,19 +27,21 @@
       </div>
     </div>
 
+    <!-- Falta de Rembolsar Card -->
     <div class="slide">
       <div class="card metric-card">
-        <div class="card-body">
+        <div class="card-body h-100">
           <div class="metric-content">
             <div class="icon-container bg-blue">
               <i class="bi bi-arrow-repeat"></i>
             </div>
             <div class="metric-info">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="label">Falta de Rembolsar</div>
-                <button class="btn btn-link p-0" (click)="toggleBalance('reembolsos')">
-                  <i class="bi" [ngClass]="visibleBalances['reembolsos'] ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
-                </button>
+              <div class="label-container">
+                <span class="label">Falta de Rembolsar</span>
+                <i class="bi toggle-visibility"
+                   [class.bi-eye-fill]="visibleBalances['reembolsos']" 
+                   [class.bi-eye-slash-fill]="!visibleBalances['reembolsos']"
+                   (click)="toggleBalance('reembolsos')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['reembolsos'] ? '2.757,00 MXN' : '****' }}
@@ -49,19 +53,21 @@
       </div>
     </div>
 
+    <!-- Vendido Card -->
     <div class="slide">
       <div class="card metric-card">
-        <div class="card-body">
+        <div class="card-body h-100">
           <div class="metric-content">
             <div class="icon-container bg-green">
               <i class="bi bi-graph-up"></i>
             </div>
             <div class="metric-info">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="label">Vendido</div>
-                <button class="btn btn-link p-0" (click)="toggleBalance('vendido')">
-                  <i class="bi" [ngClass]="visibleBalances['vendido'] ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
-                </button>
+              <div class="label-container">
+                <span class="label">Vendido</span>
+                <i class="bi toggle-visibility"
+                   [class.bi-eye-fill]="visibleBalances['vendido']" 
+                   [class.bi-eye-slash-fill]="!visibleBalances['vendido']"
+                   (click)="toggleBalance('vendido')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['vendido'] ? '0,00 MXN' : '****' }}
@@ -72,19 +78,21 @@
       </div>
     </div>
 
+    <!-- Ganancia Total Card -->
     <div class="slide">
       <div class="card metric-card">
-        <div class="card-body">
+        <div class="card-body h-100">
           <div class="metric-content">
             <div class="icon-container bg-red">
-              <i class="bi bi-piggy-bank-fill"></i>
+              <i class="bi bi-wallet2"></i>
             </div>
             <div class="metric-info">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="label">Ganancia Total</div>
-                <button class="btn btn-link p-0" (click)="toggleBalance('ganancia')">
-                  <i class="bi" [ngClass]="visibleBalances['ganancia'] ? 'bi-eye-fill' : 'bi-eye-slash-fill'"></i>
-                </button>
+              <div class="label-container">
+                <span class="label">Ganancia Total</span>
+                <i class="bi toggle-visibility"
+                   [class.bi-eye-fill]="visibleBalances['ganancia']" 
+                   [class.bi-eye-slash-fill]="!visibleBalances['ganancia']"
+                   (click)="toggleBalance('ganancia')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['ganancia'] ? '$0.00' : '****' }}
@@ -99,7 +107,6 @@
   <div class="pagination-dots">
     <div class="dot" *ngFor="let _ of [0,1,2,3]; let i = index" 
          [class.active]="currentSlide === i" 
-         (click)="goToSlide(i)">
-    </div>
+         (click)="goToSlide(i)"></div>
   </div>
 </div>

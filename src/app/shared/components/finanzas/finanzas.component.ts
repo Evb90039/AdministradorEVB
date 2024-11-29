@@ -12,7 +12,7 @@ import { of, Subscription } from 'rxjs';
   styleUrl: './finanzas.component.css'
 })
 export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('cardsSlider') cardsSlider!: ElementRef;
+  @ViewChild('cardsslider') cardsSlider!: ElementRef;
   
   totalCompras: number = 0;
   currentSlide: number = 0;
@@ -36,21 +36,12 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.cardsSlider) {
-      this.cardsSlider.nativeElement.addEventListener('scroll', () => {
-        this.onScroll();
-      });
-    }
+    // No es necesario agregar event listener adicional ya que usamos (scroll) en el template
   }
 
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
-    }
-    if (this.cardsSlider) {
-      this.cardsSlider.nativeElement.removeEventListener('scroll', () => {
-        this.onScroll();
-      });
     }
   }
 
@@ -72,23 +63,37 @@ export class FinanzasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onScroll(): void {
-    if (this.cardsSlider) {
-      const slider = this.cardsSlider.nativeElement;
-      const scrollLeft = slider.scrollLeft;
-      const slideWidth = slider.clientWidth;
-      this.currentSlide = Math.round(scrollLeft / slideWidth);
+    if (!this.cardsSlider) return;
+    
+    const slider = this.cardsSlider.nativeElement;
+    const cardWidth = slider.offsetWidth;
+    const scrollPosition = slider.scrollLeft;
+    
+    // Calculamos el índice basado en el scroll y el ancho de la tarjeta
+    let index = Math.round(scrollPosition / cardWidth);
+    
+    // Nos aseguramos que el índice esté entre 0 y 3
+    index = Math.max(0, Math.min(3, index));
+    
+    // Si estamos cerca del final, forzamos el último índice
+    if (Math.abs(slider.scrollWidth - (scrollPosition + slider.offsetWidth)) < 5) {
+      index = 3;
     }
+    
+    this.currentSlide = index;
   }
 
   goToSlide(index: number): void {
-    if (this.cardsSlider) {
-      this.currentSlide = index;
-      const slider = this.cardsSlider.nativeElement;
-      const slideWidth = slider.clientWidth;
-      slider.scrollTo({
-        left: slideWidth * index,
-        behavior: 'smooth'
-      });
-    }
+    if (!this.cardsSlider) return;
+    
+    const slider = this.cardsSlider.nativeElement;
+    const cardWidth = slider.offsetWidth;
+    
+    slider.scrollTo({
+      left: cardWidth * index,
+      behavior: 'smooth'
+    });
+    
+    this.currentSlide = index;
   }
 }
