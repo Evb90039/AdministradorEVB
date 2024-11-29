@@ -31,6 +31,29 @@
   font-weight: 600;
 }
 
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ddd;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dot.active {
+  width: 16px;
+  border-radius: 4px;
+  background-color: #8B80F9;
+}
+
 /* Desktop Grid Layout */
 @media (min-width: 768px) {
   .cards-slider {
@@ -38,6 +61,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     padding: 1rem;
+  }
+
+  .pagination-dots {
+    display: none;
   }
 }
 
@@ -48,9 +75,10 @@
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     padding: 1rem 0;
+    scroll-behavior: smooth;
   }
 
   .cards-slider::-webkit-scrollbar {
@@ -59,8 +87,9 @@
 
   .slide {
     flex: 0 0 100%;
-    scroll-snap-align: center;
+    scroll-snap-align: start;  /* Cambiado de 'center' a 'start' */
     padding: 0 1rem;
+    width: 100%;              /* Aseguramos que tome el ancho completo */
   }
 
   .metric-card {

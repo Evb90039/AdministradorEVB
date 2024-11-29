@@ -1,13 +1,12 @@
 <div class="container-fluid mt-4">
   <h1>Estadisticas</h1>
-  
-  <!-- Slider container -->
-  <div class="cards-slider">
-    <!-- Individual slides -->
+
+  <div class="cards-slider" #cardsSlider (scroll)="onScroll()">
     <div class="slide">
       <div class="card metric-card h-100">
         <div class="card-body d-flex align-items-center">
-          <div class="icon-container bg-purple"></div>
+          <div class="icon-container bg-purple">
+          </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Compras Totales</h6>
             <h4 class="card-title mb-0">{{ totalCompras | number:'1.2-2' }} MXN</h4>
@@ -19,7 +18,8 @@
     <div class="slide">
       <div class="card metric-card h-100">
         <div class="card-body d-flex align-items-center">
-          <div class="icon-container bg-blue"></div>
+          <div class="icon-container bg-blue">
+          </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Falta de Rembolsar</h6>
             <h4 class="card-title mb-0">2.757,00 MXN</h4>
@@ -32,7 +32,8 @@
     <div class="slide">
       <div class="card metric-card h-100">
         <div class="card-body d-flex align-items-center">
-          <div class="icon-container bg-green"></div>
+          <div class="icon-container bg-green">
+          </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Vendido</h6>
             <h4 class="card-title mb-0">0,00 MXN</h4>
@@ -44,13 +45,23 @@
     <div class="slide">
       <div class="card metric-card h-100">
         <div class="card-body d-flex align-items-center">
-          <div class="icon-container bg-red"></div>
+          <div class="icon-container bg-red">
+          </div>
           <div class="ms-3">
             <h6 class="card-subtitle mb-1">Ganancia Total</h6>
             <h4 class="card-title mb-0">$0.00</h4>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="pagination-dots">
+    <div 
+      *ngFor="let _ of [0,1,2,3]; let i = index" 
+      class="dot" 
+      [class.active]="currentSlide === i"
+      (click)="goToSlide(i)">
     </div>
   </div>
 </div>
