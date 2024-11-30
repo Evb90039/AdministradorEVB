@@ -1,3 +1,4 @@
+/* Card Styles */
 .metric-card {
   border: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -19,6 +20,7 @@
   height: 100%;
 }
 
+/* Metric Content Layout */
 .metric-content {
   display: flex;
   align-items: flex-start;
@@ -53,6 +55,7 @@
   gap: 0.5rem;
 }
 
+/* Typography */
 .label {
   font-size: 0.875rem;
   color: #666;
@@ -76,12 +79,18 @@
   margin-top: auto;
 }
 
+/* Background Colors */
 .bg-purple { background-color: #8B80F9; }
 .bg-blue { background-color: #5ED0E4; }
 .bg-green { background-color: #5EDAB4; }
 .bg-red { background-color: #FF8A8A; }
 
-/* Mobile Slider Layout */
+/* Pagination Dots - Base Style */
+.pagination-dots {
+  display: none;  /* Hidden by default */
+}
+
+/* Mobile Styles */
 @media (max-width: 767px) {
   .cards-slider {
     display: flex;
@@ -109,9 +118,31 @@
     margin: 0;
     height: 100%;
   }
+
+  .pagination-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .dot.active {
+    width: 16px;
+    border-radius: 4px;
+    background-color: #8B80F9;
+  }
 }
 
-/* Desktop Grid Layout */
+/* Desktop Styles */
 @media (min-width: 768px) {
   .cards-slider {
     display: grid;
@@ -121,32 +152,11 @@
   }
 
   .pagination-dots {
-    display: none;
+    display: none !important;
   }
 }
 
-.pagination-dots {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #ddd;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.dot.active {
-  width: 16px;
-  border-radius: 4px;
-  background-color: #8B80F9;
-}
-
+/* Icons */
 i.bi {
   font-size: 1.5rem;
 }
@@ -157,7 +167,7 @@ i.bi.bi-eye-slash-fill {
   cursor: pointer;
 }
 
-/* Container Styles */
+/* Container */
 .container-fluid.mt-4 {
   padding: 0;
 }
@@ -175,6 +185,8 @@ i.bi.bi-eye-slash-fill {
 .metric-card:hover .label {
   color: #444;
 }
+
+/* Label Container */
 .label-container {
   display: flex;
   justify-content: space-between;
