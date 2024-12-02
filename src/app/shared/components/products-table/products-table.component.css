@@ -1,3 +1,4 @@
+
 .table {
   th {
     white-space: nowrap;
@@ -34,6 +35,39 @@
   }
 }
 
+.search-filter-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  
+  .input-group {
+    .input-group-text {
+      background-color: #fff;
+      border-right: none;
+    }
+    
+    .form-control {
+      border-left: none;
+      &:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+      }
+    }
+  }
+  
+  .form-check {
+    padding-left: 1.8rem;
+    
+    .form-check-input {
+      &:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+    }
+  }
+}
+
 .slider-container {
   position: relative;
   width: 100%;
@@ -67,41 +101,7 @@
   touch-action: none;
 }
 
-.nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  
-  &.prev {
-    left: 5px;
-  }
-  
-  &.next {
-    right: 5px;
-  }
-  
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  i {
-    font-size: 1.25rem;
-  }
-}
-
-.slider-dots {
+.pagination-dots {
   display: flex;
   justify-content: center;
   gap: 8px;
@@ -119,13 +119,22 @@
     transition: all 0.2s ease;
     
     &.active {
-      background: #007bff;
-      transform: scale(1.2);
+      width: 16px;
+      border-radius: 4px;
+      background-color: #8B80F9;
     }
   }
 }
 
 @media (max-width: 768px) {
+  .search-filter-container {
+    margin-bottom: 1rem;
+    
+    .form-check {
+      margin-top: 0.5rem;
+    }
+  }
+
   .card-body {
     padding: 1rem;
   }
@@ -134,73 +143,5 @@
     .btn {
       padding: 0.375rem 0.75rem;
     }
-  }
-
-  .nav-button {
-    width: 35px;
-    height: 35px;
-    
-    i {
-      font-size: 1rem;
-    }
-  }
-}
-
-
-
-/* Pagination Dots - Base Style */
-.pagination-dots {
-  display: none;  /* Hidden by default */
-}
-
-/* Mobile Styles */
-@media (max-width: 767px) {
-  .cards-slider {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 1rem 0;
-    scroll-behavior: smooth;
-  }
-
-  .cards-slider::-webkit-scrollbar {
-    display: none;
-  }
-
-  .slide {
-    flex: 0 0 100%;
-    scroll-snap-align: start;
-    padding: 0 1rem;
-    min-height: 160px;
-  }
-
-  .metric-card {
-    margin: 0;
-    height: 100%;
-  }
-
-  .pagination-dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #ddd;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  .dot.active {
-    width: 16px;
-    border-radius: 4px;
-    background-color: #8B80F9;
   }
 }

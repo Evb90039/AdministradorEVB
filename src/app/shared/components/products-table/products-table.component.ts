@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Product } from '../../interfaces/product.interface';
 import { ProductService } from '../../services/product.service';
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription, combineLatest } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Timestamp } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductEditModalComponent } from '../product-edit-modal/product-edit-modal.component';
@@ -17,27 +17,60 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   @ViewChild('cardsSlider') cardsSlider!: ElementRef;
   
   products$ = new BehaviorSubject<Product[]>([]);
+  searchTerm$ = new BehaviorSubject<string>('');
+  showOnlyPending$ = new BehaviorSubject<boolean>(false);
   filteredProducts$: Observable<Product[]>;
   showFullText: boolean[] = [];
   currentSlide = 0;
   private subscription: Subscription;
   private touchStartX: number = 0;
   private touchEndX: number = 0;
+  private filteredProductsSubscription: Subscription;
+  private filteredProductsLength: number = 0;
 
-  // Getters para la paginación dinámica
   get totalSlides(): number {
-    return this.products$.getValue().length;
+    return this.filteredProductsLength;
   }
 
   get paginationArray(): number[] {
-    return Array(this.totalSlides).fill(0).map((_, i) => i);
+    return Array(this.filteredProductsLength).fill(0).map((_, i) => i);
   }
 
   constructor(
     private productService: ProductService,
     private modalService: NgbModal
   ) {
-    this.filteredProducts$ = this.products$.asObservable();
+    this.filteredProducts$ = combineLatest([
+      this.products$,
+      this.searchTerm$.pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      ),
+      this.showOnlyPending$
+    ]).pipe(
+      map(([products, searchTerm, showOnlyPending]) => {
+        return products
+          .filter(product => {
+            const matchesSearch = searchTerm === '' || 
+              product.nombreProducto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              product.nombreVendedor.toLowerCase().includes(searchTerm.toLowerCase());
+              
+            const matchesPending = !showOnlyPending || 
+              (!product.dineroRembolsado && !product.ventaPublico);
+              
+            return matchesSearch && matchesPending;
+          });
+      })
+    );
+
+    this.filteredProductsSubscription = this.filteredProducts$.subscribe(products => {
+      this.filteredProductsLength = products.length;
+      if (this.currentSlide >= this.filteredProductsLength) {
+        this.currentSlide = Math.max(0, this.filteredProductsLength - 1);
+        this.goToSlide(this.currentSlide);
+      }
+    });
+
     this.subscription = this.productService.productsUpdated$.subscribe(() => {
       this.loadProducts();
     });
@@ -49,24 +82,25 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.filteredProductsSubscription.unsubscribe();
   }
 
-  onTouchStart(event: TouchEvent) {
+  onTouchStart(event: TouchEvent): void {
     this.touchStartX = event.touches[0].clientX;
   }
 
-  onTouchMove(event: TouchEvent) {
+  onTouchMove(event: TouchEvent): void {
     this.touchEndX = event.touches[0].clientX;
   }
 
-  onTouchEnd(event: TouchEvent) {
+  onTouchEnd(event: TouchEvent): void {
     const SWIPE_THRESHOLD = 50;
     const deltaX = this.touchEndX - this.touchStartX;
 
     if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
       if (deltaX > 0 && this.currentSlide > 0) {
         this.previousSlide();
-      } else if (deltaX < 0 && this.currentSlide < (this.products$.getValue().length - 1)) {
+      } else if (deltaX < 0 && this.currentSlide < (this.filteredProductsLength - 1)) {
         this.nextSlide();
       }
     }
@@ -88,7 +122,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   nextSlide(): void {
     if (!this.cardsSlider) return;
-    if (this.currentSlide < this.totalSlides - 1) {
+    if (this.currentSlide < this.filteredProductsLength - 1) {
       this.goToSlide(this.currentSlide + 1);
     }
   }
@@ -154,5 +188,15 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   toggleText(index: number): void {
     this.showFullText[index] = !this.showFullText[index];
+  }
+
+  onSearchChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchTerm$.next(input.value);
+  }
+
+  togglePendingFilter(event: Event): void {
+    const checkbox = event.target as HTMLInputElement;
+    this.showOnlyPending$.next(checkbox.checked);
   }
 }
