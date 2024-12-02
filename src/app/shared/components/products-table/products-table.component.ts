@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { Timestamp } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductEditModalComponent } from '../product-edit-modal/product-edit-modal.component';
-
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
 @Component({
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
@@ -69,13 +69,24 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   deleteProduct(product: Product): void {
-    if (!product.id) return;
-    
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
-      this.productService.deleteProduct(product.id).subscribe(() => {
-        this.loadProducts();
-      });
+    const productId = product.id;
+    if (!productId) {
+      console.error('Cannot delete product without an ID');
+      return;
     }
+    
+    const modalRef = this.modalService.open(DeleteConfirmationModalComponent, {
+      backdrop: 'static',
+      keyboard: false
+    });
+    
+    modalRef.closed.subscribe((result) => {
+      if (result) {
+        this.productService.deleteProduct(productId).subscribe(() => {
+          this.loadProducts();
+        });
+      }
+    });
   }
 
   toggleText(index: number): void {
