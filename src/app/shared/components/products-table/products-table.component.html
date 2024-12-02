@@ -1,22 +1,8 @@
 <div class="container-fluid">
+  <!-- Desktop View -->
   <div class="d-none d-md-block">
     <div class="table-responsive">
-      <table class="table" style="width:100%;">
-        <colgroup>
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-        </colgroup>
+      <table class="table">
         <thead class="table-dark">
           <tr>
             <th>#</th>
@@ -44,15 +30,13 @@
             <td>{{ product.nombreVendedor }}</td>
             <td>
               {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
-              <button *ngIf="product.nombreProducto.split(' ').length > 6" 
-                      class="btn btn-link btn-sm p-0 ms-1"
-                      (click)="showFullText[i] = !showFullText[i]">
+              <span class="text-primary" style="cursor: pointer;" (click)="toggleText(i)">
                 {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
-              </button>
+              </span>
             </td>
             <td>
               <a class="btn btn-sm btn-outline-primary" [href]="product.enlace" target="_blank">
-                <i class="bi bi-link-45deg"></i>
+                <i class="bi bi-box-arrow-up-right"></i>
               </a>
             </td>
             <td>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</td>
@@ -67,8 +51,8 @@
                 'text-bg-warning': product.dineroRembolsado > 0 && !product.ventaPublico,
                 'text-bg-success': product.ventaPublico > 0
               }">
-                {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente' :
-                   (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
+                {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente' 
+                   : (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
               </span>
             </td>
             <td>
@@ -90,87 +74,113 @@
     </div>
   </div>
 
+  <!-- Mobile View with Slider -->
   <div class="d-md-none">
     <div class="row g-3">
-      <div *ngIf="(filteredProducts$ | async)?.length === 0" class="col-12">
+      <div class="col-12" *ngIf="(filteredProducts$ | async)?.length === 0">
         <div class="card">
           <div class="card-body text-center py-4 text-muted">
             No se encontraron registros
           </div>
         </div>
       </div>
-      <div class="col-12" *ngFor="let product of filteredProducts$ | async; let i = index">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="card-subtitle text-muted">#{{ i + 1 }}</h6>
-              <span class="badge" [ngClass]="{
-                'text-bg-danger': !product.dineroRembolsado && !product.ventaPublico,
-                'text-bg-warning': product.dineroRembolsado > 0 && !product.ventaPublico,
-                'text-bg-success': product.ventaPublico > 0
-              }">
-                {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente' :
-                   (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
-              </span>
-            </div>
 
-            <h5 class="card-title">
-              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
-              <button *ngIf="product.nombreProducto.split(' ').length > 6" 
-                      class="btn btn-link btn-sm p-0 ms-1"
-                      (click)="showFullText[i] = !showFullText[i]">
-                {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
-              </button>
-            </h5>
+      <div class="slider-container">
+        <!-- Navigation Buttons 
+        <button class="nav-button prev" (click)="previousSlide()" [class.disabled]="currentSlide === 0">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="nav-button next" (click)="nextSlide()" 
+                [class.disabled]="currentSlide === (products$.getValue().length - 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>-->
 
-            <div class="mb-2">
-              <small>Fecha:</small> {{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}
-            </div>
+        <!-- Cards Container -->
+        <div class="cards-slider" #cardsSlider (touchstart)="onTouchStart($event)" 
+             (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+          <div class="card-wrapper" *ngFor="let product of filteredProducts$ | async; let i = index">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="card-subtitle text-muted">#{{ i + 1 }}</h6>
+                  <span class="badge" [ngClass]="{
+                    'text-bg-danger': !product.dineroRembolsado && !product.ventaPublico,
+                    'text-bg-warning': product.dineroRembolsado > 0 && !product.ventaPublico,
+                    'text-bg-success': product.ventaPublico > 0
+                  }">
+                    {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente'
+                      : (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
+                  </span>
+                </div>
 
-            <div class="mb-2">
-              <small>Vendedor:</small> {{ product.nombreVendedor }}
-            </div>
+                <h5 class="card-title">
+                  {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : 
+                     (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
+                  <span class="text-primary" style="cursor: pointer;" (click)="toggleText(i)">
+                    {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
+                  </span>
+                </h5>
 
-            <div class="mb-2">
-              <small>Plataforma:</small> {{ product.tienda }}
-            </div>
+                <div class="mb-2">
+                  <span class="small">Fecha:</span> {{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}
+                </div>
 
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <small>Precio Compra</small>
-                <div>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Reembolso</small>
-                <div>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Venta Cliente</small>
-                <div>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Ganancia</small>
-                <div>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-            </div>
+                <div class="mb-2">
+                  <span class="small">Vendedor:</span> {{ product.nombreVendedor }}
+                </div>
 
-            <div class="d-flex justify-content-between">
-              <a class="btn btn-outline-primary btn-sm" [href]="product.enlace" target="_blank">
-                Ver Link
-              </a>
-              <div class="btn-group">
-                <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
-                  <i class="bi bi-files"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
-                  <i class="bi bi-trash"></i>
-                </button>
+                <div class="mb-2">
+                  <span class="small">Plataforma:</span> {{ product.tienda }}
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <span class="small">Precio Compra</span>
+                    <div>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <span class="small">Reembolso</span>
+                    <div>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <span class="small">Venta Cliente</span>
+                    <div>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <span class="small">Ganancia</span>
+                    <div>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <a class="btn btn-outline-primary btn-sm" [href]="product.enlace" target="_blank">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    Ver Link
+                  </a>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
+                      <i class="bi bi-files"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Navigation Dots -->
+        <div class="slider-dots">
+          <button *ngFor="let product of products$.getValue(); let i = index" 
+                  class="dot" 
+                  [class.active]="currentSlide === i"
+                  (click)="goToSlide(i)">
+          </button>
         </div>
       </div>
     </div>

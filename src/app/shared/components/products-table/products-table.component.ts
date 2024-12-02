@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Product } from '../../interfaces/product.interface';
 import { ProductService } from '../../services/product.service';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
@@ -7,16 +7,22 @@ import { Timestamp } from '@angular/fire/firestore';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductEditModalComponent } from '../product-edit-modal/product-edit-modal.component';
 import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
+
 @Component({
   selector: 'app-products-table',
   templateUrl: './products-table.component.html',
   styleUrls: ['./products-table.component.scss']
 })
 export class ProductsTableComponent implements OnInit, OnDestroy {
+  @ViewChild('cardsSlider') cardsSlider!: ElementRef;
+  
   products$ = new BehaviorSubject<Product[]>([]);
   filteredProducts$: Observable<Product[]>;
   showFullText: boolean[] = [];
+  currentSlide = 0;
   private subscription: Subscription;
+  private touchStartX: number = 0;
+  private touchEndX: number = 0;
 
   constructor(
     private productService: ProductService,
@@ -34,6 +40,55 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.touchEndX = event.touches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const SWIPE_THRESHOLD = 50;
+    const deltaX = this.touchEndX - this.touchStartX;
+
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      if (deltaX > 0 && this.currentSlide > 0) {
+        this.previousSlide();
+      } else if (deltaX < 0 && this.currentSlide < (this.products$.getValue().length - 1)) {
+        this.nextSlide();
+      }
+    }
+  }
+
+  goToSlide(index: number): void {
+    if (!this.cardsSlider) return;
+    
+    const slider = this.cardsSlider.nativeElement;
+    const cardWidth = slider.offsetWidth;
+    
+    slider.scrollTo({
+      left: cardWidth * index,
+      behavior: 'smooth'
+    });
+    
+    this.currentSlide = index;
+  }
+
+  nextSlide(): void {
+    if (!this.cardsSlider) return;
+    const products = this.products$.getValue();
+    if (this.currentSlide < products.length - 1) {
+      this.goToSlide(this.currentSlide + 1);
+    }
+  }
+
+  previousSlide(): void {
+    if (this.currentSlide > 0) {
+      this.goToSlide(this.currentSlide - 1);
+    }
   }
 
   private loadProducts(): void {
