@@ -24,6 +24,15 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   private touchStartX: number = 0;
   private touchEndX: number = 0;
 
+  // Getters para la paginación dinámica
+  get totalSlides(): number {
+    return this.products$.getValue().length;
+  }
+
+  get paginationArray(): number[] {
+    return Array(this.totalSlides).fill(0).map((_, i) => i);
+  }
+
   constructor(
     private productService: ProductService,
     private modalService: NgbModal
@@ -79,8 +88,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   nextSlide(): void {
     if (!this.cardsSlider) return;
-    const products = this.products$.getValue();
-    if (this.currentSlide < products.length - 1) {
+    if (this.currentSlide < this.totalSlides - 1) {
       this.goToSlide(this.currentSlide + 1);
     }
   }

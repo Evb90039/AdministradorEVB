@@ -145,3 +145,62 @@
     }
   }
 }
+
+
+
+/* Pagination Dots - Base Style */
+.pagination-dots {
+  display: none;  /* Hidden by default */
+}
+
+/* Mobile Styles */
+@media (max-width: 767px) {
+  .cards-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+  }
+
+  .cards-slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 0 1rem;
+    min-height: 160px;
+  }
+
+  .metric-card {
+    margin: 0;
+    height: 100%;
+  }
+
+  .pagination-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ddd;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .dot.active {
+    width: 16px;
+    border-radius: 4px;
+    background-color: #8B80F9;
+  }
+}

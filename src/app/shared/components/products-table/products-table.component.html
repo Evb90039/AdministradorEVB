@@ -175,12 +175,13 @@
         </div>
 
         <!-- Navigation Dots -->
-        <div class="slider-dots">
-          <button *ngFor="let product of products$.getValue(); let i = index" 
-                  class="dot" 
-                  [class.active]="currentSlide === i"
-                  (click)="goToSlide(i)">
-          </button>
+        <div class="pagination-dots">
+          <div 
+            class="dot" 
+            *ngFor="let i of paginationArray" 
+            [class.active]="currentSlide === i" 
+            (click)="goToSlide(i)">
+          </div>
         </div>
       </div>
     </div>
