@@ -4,10 +4,11 @@ import { AuthService } from '../auth/services/auth.service';
 import { Router } from '@angular/router';
 import { NavComponent } from '../../shared/components/nav/nav.component';
 import { FinanzasComponent } from "../../shared/components/finanzas/finanzas.component";
+import { SharedModule } from "../../shared/shared.module";
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NavComponent, FinanzasComponent],
+  imports: [CommonModule, NavComponent, FinanzasComponent, SharedModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

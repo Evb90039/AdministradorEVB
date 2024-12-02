@@ -1,0 +1,174 @@
+<div class="container-fluid">
+  <div class="d-none d-md-block">
+    <div class="table-responsive">
+      <table class="table" style="width:100%;">
+        <colgroup>
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+          <col style="width: 7%" />
+        </colgroup>
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Vendedor</th>
+            <th>Producto</th>
+            <th>Link</th>
+            <th>Precio Compra</th>
+            <th>Reembolso</th>
+            <th>Costo Final</th>
+            <th>Venta Cliente</th>
+            <th>Ganancia</th>
+            <th>Plataforma</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="(filteredProducts$ | async)?.length === 0">
+            <td colspan="13" class="text-center py-4 text-muted">No se encontraron registros</td>
+          </tr>
+          <tr *ngFor="let product of filteredProducts$ | async; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}</td>
+            <td>{{ product.nombreVendedor }}</td>
+            <td>
+              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
+              <button *ngIf="product.nombreProducto.split(' ').length > 6" 
+                      class="btn btn-link btn-sm p-0 ms-1"
+                      (click)="showFullText[i] = !showFullText[i]">
+                {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
+              </button>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-outline-primary" [href]="product.enlace" target="_blank">
+                <i class="bi bi-link-45deg"></i>
+              </a>
+            </td>
+            <td>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</td>
+            <td>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</td>
+            <td>{{ product.precioCompra - (product.dineroRembolsado || 0) | currency:'MXN':'symbol-narrow' }}</td>
+            <td>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</td>
+            <td>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</td>
+            <td>{{ product.tienda }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'text-bg-success': product.dineroRembolsado > 0,
+                'text-bg-danger': !product.dineroRembolsado
+              }">
+                {{ product.dineroRembolsado > 0 ? 'Vendido' : 'Pendiente' }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
+                  <i class="bi bi-files"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-md-none">
+    <div class="row g-3">
+      <div *ngIf="(filteredProducts$ | async)?.length === 0" class="col-12">
+        <div class="card">
+          <div class="card-body text-center py-4 text-muted">
+            No se encontraron registros
+          </div>
+        </div>
+      </div>
+      <div class="col-12" *ngFor="let product of filteredProducts$ | async; let i = index">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="card-subtitle text-muted">#{{ i + 1 }}</h6>
+              <span class="badge" [ngClass]="{
+                'text-bg-success': product.dineroRembolsado > 0,
+                'text-bg-danger': !product.dineroRembolsado
+              }">
+                {{ product.dineroRembolsado > 0 ? 'Vendido' : 'Pendiente' }}
+              </span>
+            </div>
+
+            <h5 class="card-title">
+              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
+              <button *ngIf="product.nombreProducto.split(' ').length > 6" 
+                      class="btn btn-link btn-sm p-0 ms-1"
+                      (click)="showFullText[i] = !showFullText[i]">
+                {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
+              </button>
+            </h5>
+
+            <div class="mb-2">
+              <small>Fecha:</small> {{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}
+            </div>
+
+            <div class="mb-2">
+              <small>Vendedor:</small> {{ product.nombreVendedor }}
+            </div>
+
+            <div class="mb-2">
+              <small>Plataforma:</small> {{ product.tienda }}
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <small>Precio Compra</small>
+                <div>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</div>
+              </div>
+              <div class="col-6">
+                <small>Reembolso</small>
+                <div>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</div>
+              </div>
+              <div class="col-6">
+                <small>Venta Cliente</small>
+                <div>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</div>
+              </div>
+              <div class="col-6">
+                <small>Ganancia</small>
+                <div>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a class="btn btn-outline-primary btn-sm" [href]="product.enlace" target="_blank">
+                Ver Link
+              </a>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
+                  <i class="bi bi-files"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

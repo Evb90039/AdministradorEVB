@@ -1,0 +1,84 @@
+/* Estilos generales */
+.card {
+  border: none;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+}
+
+/* Estilos para vista desktop */
+.table-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.table {
+  margin-bottom: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Estilos para vista móvil */
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  background-color: #fff;
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item h6 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.list-group-item .badge {
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+}
+
+.list-group-item .text-muted {
+  font-size: 0.875rem;
+}
+
+.list-group-item .btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Columnas para desktop */
+@media (min-width: 768px) {
+  .fecha-col { width: 80px; }
+  .hora-col { width: 85px; }
+  .nombre-col { width: 120px; }
+  .tel-col { width: 100px; }
+  .monto-col { width: 70px; }
+  .estado-col { width: 90px; }
+  .acciones-col { width: 90px; }
+}
+
+/* Ajustes móviles */
+@media (max-width: 767px) {
+  .card-body {
+    padding: 0;
+  }
+  
+  .list-group-item .btn {
+    width: auto;
+    white-space: nowrap;
+  }
+  
+  .list-group-item .bi {
+    margin-right: 0.25rem;
+  }
+}
