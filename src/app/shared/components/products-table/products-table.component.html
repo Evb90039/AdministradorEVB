@@ -1,29 +1,26 @@
 <div class="container-fluid">
-  <!-- Search and Filter Container -->
   <div class="search-filter-container mb-4">
     <div class="row g-3 align-items-center">
       <div class="col-12 col-md-8">
         <div class="input-group">
           <span class="input-group-text">
-            <i class="bi bi-search"></i>
+            <i class="fas fa-search"></i>
           </span>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Buscar producto o vendedor..."
-            (input)="onSearchChange($event)"
-          >
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar por producto o vendedor..."
+            (input)="onSearchChange($event)">
         </div>
       </div>
+
       <div class="col-12 col-md-4">
         <div class="form-check form-switch">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            role="switch"
+          <input 
+            class="form-check-input" 
+            type="checkbox" 
             id="pendingFilter"
-            (change)="togglePendingFilter($event)"
-          >
+            (change)="togglePendingFilter($event)">
           <label class="form-check-label" for="pendingFilter">
             Solo pendientes de reembolso
           </label>
@@ -35,22 +32,7 @@
   <!-- Desktop Table View -->
   <div class="d-none d-md-block">
     <div class="table-responsive">
-      <table class="table" style="width:100%;">
-        <colgroup>
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-          <col style="width: 7%" />
-        </colgroup>
+      <table class="table">
         <thead class="table-dark">
           <tr>
             <th>#</th>
@@ -70,21 +52,27 @@
         </thead>
         <tbody>
           <tr *ngIf="(filteredProducts$ | async)?.length === 0">
-            <td colspan="13" class="text-center py-4 text-muted">No se encontraron registros</td>
+            <td colspan="13" class="text-center py-4 text-muted">
+              No se encontraron registros
+            </td>
           </tr>
           <tr *ngFor="let product of filteredProducts$ | async; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}</td>
             <td>{{ product.nombreVendedor }}</td>
             <td>
-              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
-              <span class="text-primary" style="cursor: pointer;" (click)="toggleText(i)">
+              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : 
+                (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
+              <span 
+                class="text-primary" 
+                style="cursor: pointer;"
+                (click)="toggleText(i)">
                 {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
               </span>
             </td>
             <td>
-              <a class="btn btn-sm btn-outline-primary" [href]="product.enlace" target="_blank">
-                <i class="bi bi-link-45deg"></i>
+              <a [href]="product.enlace" target="_blank" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-link"></i>
               </a>
             </td>
             <td>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</td>
@@ -108,7 +96,7 @@
                 <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
                   <i class="bi bi-pencil"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-success" (click)="duplicateProduct(product)">
+                <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
                   <i class="bi bi-files"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
@@ -121,103 +109,105 @@
       </table>
     </div>
   </div>
-<!-- Mobile Card View -->
-<div class="d-md-none">
-  <div class="row g-3" *ngIf="(filteredProducts$ | async)?.length === 0">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body text-center py-4 text-muted">
-          No se encontraron registros
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="slider-container">
-    <div class="cards-slider" #cardsSlider
-         (touchstart)="onTouchStart($event)"
-         (touchmove)="onTouchMove($event)"
-         (touchend)="onTouchEnd($event)">
-      <div class="card-wrapper" *ngFor="let product of filteredProducts$ | async; let i = index">
+  <!-- Mobile Card View -->
+  <div class="d-md-none">
+    <div class="row g-3" *ngIf="(filteredProducts$ | async)?.length === 0">
+      <div class="col-12">
         <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h6 class="card-subtitle text-muted">#{{ i + 1 }}</h6>
-              <span class="badge" [ngClass]="{
-                'text-bg-danger': !product.dineroRembolsado && !product.ventaPublico,
-                'text-bg-warning': product.dineroRembolsado > 0 && !product.ventaPublico,
-                'text-bg-success': product.ventaPublico > 0
-              }">
-                {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente' : 
-                   (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
-              </span>
-            </div>
-
-            <h5 class="card-title">
-              {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
-              <span class="text-primary" style="cursor: pointer;" (click)="toggleText(i)">
-                {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
-              </span>
-            </h5>
-
-            <div class="mb-2">
-              <small>Fecha:</small> {{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}
-            </div>
-
-            <div class="mb-2">
-              <small>Vendedor:</small> {{ product.nombreVendedor }}
-            </div>
-
-            <div class="mb-2">
-              <small>Plataforma:</small> {{ product.tienda }}
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <small>Precio Compra</small>
-                <div>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Reembolso</small>
-                <div>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Venta Cliente</small>
-                <div>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-              <div class="col-6">
-                <small>Ganancia</small>
-                <div>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</div>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <a class="btn btn-outline-primary btn-sm" [href]="product.enlace" target="_blank">
-                Ver Link
-              </a>
-              <div class="btn-group">
-                <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-success" (click)="duplicateProduct(product)">
-                  <i class="bi bi-files"></i>
-                </button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </div>
-            </div>
+          <div class="card-body text-center py-4 text-muted">
+            No se encontraron registros
           </div>
         </div>
       </div>
     </div>
 
-    <div class="pagination-dots">
-      <div class="dot" *ngFor="let i of paginationArray" 
-           [class.active]="currentSlide === i"
-           (click)="goToSlide(i)">
+    <div class="container-fluid mt-4">
+      <div class="slider-container">
+        <div class="cards-slider" #cardsSlider (scroll)="onScroll()">
+          <div class="slide" *ngFor="let product of filteredProducts$ | async; let i = index">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="card-subtitle text-muted">#{{ i + 1 }}</h6>
+                  <span class="badge" [ngClass]="{
+                    'text-bg-danger': !product.dineroRembolsado && !product.ventaPublico,
+                    'text-bg-warning': product.dineroRembolsado > 0 && !product.ventaPublico,
+                    'text-bg-success': product.ventaPublico > 0
+                  }">
+                    {{ !product.dineroRembolsado && !product.ventaPublico ? 'Pendiente' : 
+                       (product.dineroRembolsado > 0 && !product.ventaPublico ? 'Rembolsado' : 'Vendido') }}
+                  </span>
+                </div>
+
+                <h5 class="card-title">
+                  {{ product.nombreProducto | slice:0:(showFullText[i] ? -1 : 
+                    (product.nombreProducto.split(' ').slice(0,6).join(' ').length)) }}
+                  <span 
+                    class="text-primary" 
+                    style="cursor: pointer;" 
+                    (click)="toggleText(i)">
+                    {{showFullText[i] ? 'Ver menos' : 'Ver más'}}
+                  </span>
+                </h5>
+
+                <div class="mb-2">
+                  <small>Fecha:</small> {{ product.fechaAlta | date:'dd MMM yyyy':'':'es' }}
+                </div>
+                <div class="mb-2">
+                  <small>Vendedor:</small> {{ product.nombreVendedor }}
+                </div>
+                <div class="mb-2">
+                  <small>Plataforma:</small> {{ product.tienda }}
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <small>Precio Compra</small>
+                    <div>{{ product.precioCompra | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <small>Reembolso</small>
+                    <div>{{ product.dineroRembolsado | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <small>Venta Cliente</small>
+                    <div>{{ product.ventaPublico | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                  <div class="col-6">
+                    <small>Ganancia</small>
+                    <div>{{ product.ventaPublico - (product.precioCompra - product.dineroRembolsado) | currency:'MXN':'symbol-narrow' }}</div>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <a [href]="product.enlace" target="_blank" class="btn btn-outline-primary btn-sm">Ver Link</a>
+                  <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-primary" (click)="editProduct(product)">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" (click)="duplicateProduct(product)">
+                      <i class="bi bi-files"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination-dots">
+          <button 
+            class="dot" 
+            *ngFor="let i of paginationArray" 
+            [class.active]="currentSlide === i"
+            (click)="goToSlide(i)">
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

@@ -13,10 +13,8 @@
             <div class="metric-info">
               <div class="label-container">
                 <span class="label">Compras Totales</span>
-                <i class="bi toggle-visibility" 
-                   [class.bi-eye-fill]="visibleBalances['compras']" 
-                   [class.bi-eye-slash-fill]="!visibleBalances['compras']"
-                   (click)="toggleBalance('compras')"></i>
+                <i class="bi toggle-visibility" [class.bi-eye-fill]="visibleBalances['compras']"
+                  [class.bi-eye-slash-fill]="!visibleBalances['compras']" (click)="toggleBalance('compras')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['compras'] ? (totalCompras | number:'1.2-2') + ' MXN' : '****' }}
@@ -38,10 +36,8 @@
             <div class="metric-info">
               <div class="label-container">
                 <span class="label">Falta de Rembolsar</span>
-                <i class="bi toggle-visibility"
-                   [class.bi-eye-fill]="visibleBalances['reembolsos']" 
-                   [class.bi-eye-slash-fill]="!visibleBalances['reembolsos']"
-                   (click)="toggleBalance('reembolsos')"></i>
+                <i class="bi toggle-visibility" [class.bi-eye-fill]="visibleBalances['reembolsos']"
+                  [class.bi-eye-slash-fill]="!visibleBalances['reembolsos']" (click)="toggleBalance('reembolsos')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['reembolsos'] ? (faltaRembolsar | number:'1.2-2') + ' MXN' : '****' }}
@@ -66,10 +62,8 @@
             <div class="metric-info">
               <div class="label-container">
                 <span class="label">Vendido</span>
-                <i class="bi toggle-visibility"
-                   [class.bi-eye-fill]="visibleBalances['vendido']" 
-                   [class.bi-eye-slash-fill]="!visibleBalances['vendido']"
-                   (click)="toggleBalance('vendido')"></i>
+                <i class="bi toggle-visibility" [class.bi-eye-fill]="visibleBalances['vendido']"
+                  [class.bi-eye-slash-fill]="!visibleBalances['vendido']" (click)="toggleBalance('vendido')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['vendido'] ? (totalVendido | number:'1.2-2') + ' MXN' : '****' }}
@@ -91,10 +85,8 @@
             <div class="metric-info">
               <div class="label-container">
                 <span class="label">Ganancia Total</span>
-                <i class="bi toggle-visibility"
-                   [class.bi-eye-fill]="visibleBalances['ganancia']" 
-                   [class.bi-eye-slash-fill]="!visibleBalances['ganancia']"
-                   (click)="toggleBalance('ganancia')"></i>
+                <i class="bi toggle-visibility" [class.bi-eye-fill]="visibleBalances['ganancia']"
+                  [class.bi-eye-slash-fill]="!visibleBalances['ganancia']" (click)="toggleBalance('ganancia')"></i>
               </div>
               <div class="value">
                 {{ visibleBalances['ganancia'] ? (gananciaTotal | number:'1.2-2') + ' MXN' : '****' }}
@@ -107,8 +99,7 @@
   </div>
 
   <div class="pagination-dots">
-    <div class="dot" *ngFor="let _ of [0,1,2,3]; let i = index" 
-         [class.active]="currentSlide === i" 
-         (click)="goToSlide(i)"></div>
+    <div class="dot" *ngFor="let _ of [0,1,2,3]; let i = index" [class.active]="currentSlide === i"
+      (click)="goToSlide(i)"></div>
   </div>
 </div>

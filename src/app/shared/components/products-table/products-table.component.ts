@@ -1,3 +1,4 @@
+// products-table.component.ts
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Product } from '../../interfaces/product.interface';
 import { ProductService } from '../../services/product.service';
@@ -22,18 +23,11 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   filteredProducts$: Observable<Product[]>;
   showFullText: boolean[] = [];
   currentSlide = 0;
-  private subscription: Subscription;
-  private touchStartX: number = 0;
-  private touchEndX: number = 0;
-  private filteredProductsSubscription: Subscription;
-  private filteredProductsLength: number = 0;
-
-  get totalSlides(): number {
-    return this.filteredProductsLength;
-  }
+  private subscriptions: Subscription[] = [];
+  filteredLength = 0;
 
   get paginationArray(): number[] {
-    return Array(this.filteredProductsLength).fill(0).map((_, i) => i);
+    return Array(this.filteredLength).fill(0).map((_, i) => i);
   }
 
   constructor(
@@ -49,7 +43,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
       this.showOnlyPending$
     ]).pipe(
       map(([products, searchTerm, showOnlyPending]) => {
-        return products
+        const filtered = products
           .filter(product => {
             const matchesSearch = searchTerm === '' || 
               product.nombreProducto.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -60,20 +54,23 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
               
             return matchesSearch && matchesPending;
           });
+        
+        this.filteredLength = filtered.length;
+        return filtered;
       })
     );
 
-    this.filteredProductsSubscription = this.filteredProducts$.subscribe(products => {
-      this.filteredProductsLength = products.length;
-      if (this.currentSlide >= this.filteredProductsLength) {
-        this.currentSlide = Math.max(0, this.filteredProductsLength - 1);
-        this.goToSlide(this.currentSlide);
-      }
-    });
-
-    this.subscription = this.productService.productsUpdated$.subscribe(() => {
-      this.loadProducts();
-    });
+    this.subscriptions.push(
+      this.filteredProducts$.subscribe(products => {
+        if (this.currentSlide >= products.length) {
+          this.currentSlide = Math.max(0, products.length - 1);
+          this.goToSlide(this.currentSlide);
+        }
+      }),
+      this.productService.productsUpdated$.subscribe(() => {
+        this.loadProducts();
+      })
+    );
   }
 
   ngOnInit(): void {
@@ -81,33 +78,11 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    this.filteredProductsSubscription.unsubscribe();
-  }
-
-  onTouchStart(event: TouchEvent): void {
-    this.touchStartX = event.touches[0].clientX;
-  }
-
-  onTouchMove(event: TouchEvent): void {
-    this.touchEndX = event.touches[0].clientX;
-  }
-
-  onTouchEnd(event: TouchEvent): void {
-    const SWIPE_THRESHOLD = 50;
-    const deltaX = this.touchEndX - this.touchStartX;
-
-    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
-      if (deltaX > 0 && this.currentSlide > 0) {
-        this.previousSlide();
-      } else if (deltaX < 0 && this.currentSlide < (this.filteredProductsLength - 1)) {
-        this.nextSlide();
-      }
-    }
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   goToSlide(index: number): void {
-    if (!this.cardsSlider) return;
+    if (!this.cardsSlider?.nativeElement) return;
     
     const slider = this.cardsSlider.nativeElement;
     const cardWidth = slider.offsetWidth;
@@ -118,19 +93,6 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
     });
     
     this.currentSlide = index;
-  }
-
-  nextSlide(): void {
-    if (!this.cardsSlider) return;
-    if (this.currentSlide < this.filteredProductsLength - 1) {
-      this.goToSlide(this.currentSlide + 1);
-    }
-  }
-
-  previousSlide(): void {
-    if (this.currentSlide > 0) {
-      this.goToSlide(this.currentSlide - 1);
-    }
   }
 
   private loadProducts(): void {
@@ -167,14 +129,10 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
 
   deleteProduct(product: Product): void {
     const productId = product.id;
-    if (!productId) {
-      console.error('Cannot delete product without an ID');
-      return;
-    }
+    if (!productId) return;
     
     const modalRef = this.modalService.open(DeleteConfirmationModalComponent, {
-      backdrop: 'static',
-      keyboard: false
+      backdrop: 'static'
     });
     
     modalRef.closed.subscribe((result) => {
@@ -193,10 +151,24 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   onSearchChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchTerm$.next(input.value);
+    this.currentSlide = 0;
+    this.goToSlide(0);
   }
 
   togglePendingFilter(event: Event): void {
     const checkbox = event.target as HTMLInputElement;
     this.showOnlyPending$.next(checkbox.checked);
+    this.currentSlide = 0;
+    this.goToSlide(0);
+  }
+
+  onScroll(): void {
+    if (!this.cardsSlider?.nativeElement) return;
+    
+    const slider = this.cardsSlider.nativeElement;
+    const cardWidth = slider.offsetWidth;
+    const scrollPosition = slider.scrollLeft;
+    
+    this.currentSlide = Math.round(scrollPosition / cardWidth);
   }
 }
