@@ -119,18 +119,22 @@ export class ProductService {
     
     return from(getDocs(productsRef)).pipe(
       map(snapshot => {
-        let totalVendido = 0;
-        let totalPorRembolsar = 0;
+        let gananciaTotal = 0;
         
         snapshot.docs.forEach(doc => {
           const product = doc.data() as Product;
-          totalVendido += (product.ventaPublico || 0);
-          if (!product.dineroRembolsado) {
-            totalPorRembolsar += product.precioCompra;
+          
+          // Solo considera productos que tienen un reembolso
+          if (product.dineroRembolsado) {
+            const costoFinal = product.precioCompra - product.dineroRembolsado;
+            // Verificamos que ventaPublico existe antes de hacer el cálculo
+            if (product.ventaPublico !== undefined) {
+              gananciaTotal += product.ventaPublico - costoFinal;
+            }
           }
         });
         
-        return totalVendido - totalPorRembolsar;
+        return gananciaTotal;
       })
     );
   }

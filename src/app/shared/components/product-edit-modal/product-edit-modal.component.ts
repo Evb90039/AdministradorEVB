@@ -52,9 +52,13 @@ export class ProductEditModalComponent implements OnInit {
   onSubmit() {
     if (this.productForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
+      const fechaInput = this.productForm.value.fechaAlta;
+      // Ajustar la fecha para que use la zona horaria local
+      const fecha = new Date(fechaInput + 'T00:00:00');
+      
       const formData = {
         ...this.productForm.value,
-        fechaAlta: new Date(this.productForm.value.fechaAlta)
+        fechaAlta: fecha
       };
 
       if (this.currentProduct?.id) {
