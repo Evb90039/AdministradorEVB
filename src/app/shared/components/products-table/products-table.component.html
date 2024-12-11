@@ -17,10 +17,11 @@
       <div class="col-12 col-md-4">
         <div class="form-check form-switch">
           <input 
-            class="form-check-input" 
-            type="checkbox" 
-            id="pendingFilter"
-            (change)="togglePendingFilter($event)">
+          class="form-check-input" 
+          type="checkbox" 
+          id="pendingFilter"
+          [checked]="showOnlyPending$ | async"
+          (change)="togglePendingFilter($event)">
           <label class="form-check-label" for="pendingFilter">
             Solo pendientes de reembolso
           </label>

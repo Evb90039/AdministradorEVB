@@ -19,7 +19,7 @@ export class ProductsTableComponent implements OnInit, OnDestroy {
   
   products$ = new BehaviorSubject<Product[]>([]);
   searchTerm$ = new BehaviorSubject<string>('');
-  showOnlyPending$ = new BehaviorSubject<boolean>(false);
+  showOnlyPending$ = new BehaviorSubject<boolean>(true);
   filteredProducts$: Observable<Product[]>;
   showFullText: boolean[] = [];
   currentSlide = 0;
