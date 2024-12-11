@@ -38,15 +38,14 @@
     box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   }
   
-  .form-floating > label {
+  .form-floating label {
     padding-left: 1rem;
   }
   
-  .form-floating>.form-control {
+  .form-floating .form-control {
     padding-top: 1.625rem;
     padding-bottom: 0.625rem;
   }
-  
   /* Animación suave para el mensaje de error */
   .alert {
     animation: fadeIn 0.3s ease-in;
