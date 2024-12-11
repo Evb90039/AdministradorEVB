@@ -27,7 +27,8 @@ export class NavComponent {
     const modalRef = this.modalService.open(ProductModalComponent, {
       size: 'lg',
       backdrop: 'static',
-      keyboard: false
+      keyboard: true,
+      centered: true
     });
 
     modalRef.result.then(

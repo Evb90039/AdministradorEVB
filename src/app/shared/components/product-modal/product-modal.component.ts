@@ -55,7 +55,9 @@ export class ProductModalComponent implements OnInit {
   ngOnInit() {
     // Set current date as default
     this.productForm.patchValue({
-      fechaAlta: new Date().toISOString().split('T')[0]
+      fechaAlta: new Date().toISOString().split('T')[0],
+      dineroRembolsado: 0,
+      ventaPublico:0
     });
   }
 

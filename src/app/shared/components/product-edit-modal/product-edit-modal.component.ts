@@ -1,5 +1,5 @@
 // product-edit-modal.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Product } from '../../interfaces/product.interface';
@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [ ReactiveFormsModule]
 })
 export class ProductEditModalComponent implements OnInit {
+  @ViewChild('dineroRembolsadoInput') dineroRembolsadoInput!: ElementRef;
   productForm: FormGroup;
   currentProduct?: Product;
   isSubmitting = false;
@@ -25,7 +26,9 @@ export class ProductEditModalComponent implements OnInit {
   ) {
     this.productForm = this.initForm();
   }
-
+  ngAfterViewInit() {
+    this.dineroRembolsadoInput.nativeElement.focus();
+  }
   ngOnInit() {
     if (this.currentProduct) {
       this.productForm.patchValue({
