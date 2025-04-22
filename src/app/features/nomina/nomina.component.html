@@ -1,0 +1,202 @@
+<div class="container">
+    <h2>Control de Gastos</h2>
+    
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <!-- Sección de Cuentas -->
+    <div class="section-header">
+        <h3>Cuentas</h3>
+        <button class="new-account-btn" 
+                (click)="mostrarFormularioNuevaCuenta()" 
+                [disabled]="creandoCuenta">
+            <i class="bi bi-plus"></i> Nueva Cuenta
+        </button>
+    </div>
+
+    <app-nueva-cuenta-modal
+        *ngIf="mostrarFormNuevaCuenta"
+        (confirmar)="crearNuevaCuenta($event)"
+        (cancelar)="cancelarNuevaCuenta()">
+    </app-nueva-cuenta-modal>
+
+    <div *ngIf="cargando" class="loading-message">
+        <i class="bi bi-arrow-clockwise"></i> Cargando cuentas...
+    </div>
+
+    <div *ngIf="!cargando && cuentas.length === 0" class="empty-message">
+        No hay cuentas registradas. ¡Crea una nueva cuenta para empezar!
+    </div>
+
+    <!-- Paginación de Cuentas -->
+    <div class="paginacion" *ngIf="cuentas.length > 3">
+        <button class="btn-pagina" [disabled]="paginaActualCuentas === 1" (click)="paginaAnteriorCuentas()">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        
+        <span class="pagina-info">
+            Página {{ paginaActualCuentas }} de {{ totalPaginasCuentas }}
+        </span>
+
+        <button class="btn-pagina" [disabled]="paginaActualCuentas === totalPaginasCuentas" (click)="paginaSiguienteCuentas()">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+
+    <div class="cuentas-grid" *ngIf="!cargando && cuentas.length > 0">
+        <div *ngFor="let cuenta of cuentasPaginadas" class="cuenta-card">
+            <h3>{{ cuenta.nombre }}</h3>
+            <div class="saldo">
+                <ng-container *ngIf="cuentaEditando?.id !== cuenta.id; else editando">
+                    <div class="saldo-display">
+                        <span>$</span>
+                        <span>{{ cuenta.saldo | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="button-group" *ngIf="cuenta.saldo === 0">
+                        <button class="add-btn" (click)="editarCuenta(cuenta)">
+                            <i class="fas fa-plus"></i> Agregar Saldo
+                        </button>
+                        <button class="edit-btn" (click)="editarCuenta(cuenta)">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="delete-btn" 
+                                (click)="eliminarCuenta(cuenta)"
+                                title="Eliminar cuenta">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-template #editando>
+                    <div class="saldo-edit">
+                        <div class="input-group">
+                            <span>$</span>
+                            <input type="number" 
+                                   [(ngModel)]="saldoAAgregar" 
+                                   class="saldo-input"
+                                   placeholder="Monto a agregar">
+                        </div>
+                        <div class="saldo-actual">
+                            Saldo actual: ${{ cuenta.saldo | number:'1.2-2' }}
+                        </div>
+                        <div class="saldo-nuevo" *ngIf="saldoAAgregar">
+                            Nuevo saldo: ${{ (cuenta.saldo + saldoAAgregar) | number:'1.2-2' }}
+                        </div>
+                    </div>
+                    <div class="edit-buttons">
+                        <button class="save-btn" (click)="agregarSaldo(cuenta)" [disabled]="!saldoAAgregar">
+                            <i class="fas fa-save"></i> Agregar
+                        </button>
+                        <button class="cancel-btn" (click)="cancelarEdicion()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Movimientos -->
+    <div *ngIf="cuentas.length > 0">
+        <div class="section-header movimientos-header">
+            <h3>Movimientos del Día</h3>
+            <div class="date-navigation">
+                <button class="nav-btn" (click)="cambiarFecha(-1)" title="Día anterior">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <span class="current-date">{{ fechaSeleccionada | date:'EEEE, d \'de\' MMMM \'de\' yyyy':'':'es' }}</span>
+                <button class="nav-btn" (click)="cambiarFecha(1)" title="Día siguiente">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+            <button class="new-movement-btn" 
+                    (click)="mostrarFormularioMovimiento()" 
+                    *ngIf="!mostrarFormMovimiento && cuentas.length > 0"
+                    [disabled]="creandoMovimiento">
+                <i class="bi bi-plus"></i> Nuevo Movimiento
+            </button>
+        </div>
+        <!-- Paginación -->
+        <div class="paginacion" *ngIf="movimientos.length > 2">
+            <button class="btn-pagina" [disabled]="paginaActual === 1" (click)="paginaAnterior()">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            
+            <span class="pagina-info">
+                Página {{ paginaActual }} de {{ totalPaginas }}
+            </span>
+
+            <button class="btn-pagina" [disabled]="paginaActual === totalPaginas" (click)="paginaSiguiente()">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <app-nuevo-movimiento-modal
+        *ngIf="mostrarFormMovimiento"
+        [cuentas]="cuentas"
+        (confirmar)="crearMovimiento($event)"
+        (cancelar)="cancelarMovimiento()">
+    </app-nuevo-movimiento-modal>
+
+    <div class="movimientos-lista" *ngIf="movimientos.length > 0">
+        <div *ngFor="let movimiento of movimientosPaginados" class="movimiento-item" [ngClass]="movimiento.tipo.toLowerCase()">
+            <div class="movimiento-info">
+                <div class="movimiento-principal">
+                    <span class="tipo-badge-small" [ngClass]="movimiento.tipo.toLowerCase()">
+                        {{ movimiento.tipo === 'INGRESO' ? 'Ingreso' : 'Egreso' }}
+                    </span>
+                    <span class="descripcion">{{ movimiento.descripcion }}</span>
+                </div>
+                <div class="movimiento-secundario">
+                    <span class="cuenta-nombre">{{ movimiento.cuentaNombre }}</span>
+                    <span class="monto" [ngClass]="movimiento.tipo.toLowerCase()">
+                        {{ movimiento.tipo === 'EGRESO' ? '-' : '+' }}${{ movimiento.monto | number:'1.2-2':'es' }}
+                    </span>
+                </div>
+            </div>
+            <div class="movimiento-acciones">
+                <button class="delete-btn-small" (click)="mostrarConfirmacionEliminar(movimiento)" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="cuentas.length > 0">
+        <div *ngIf="movimientos.length === 0"  class="empty-message">
+            No hay movimientos registrados para esta fecha.
+        </div>
+    </div>
+
+    <!-- Barra de navegación fija con totales-->
+    <nav class="totales-nav">
+        <div class="totales-content">
+            <div class="total-item ingresos">
+                <span>Total Ingresos:</span>
+                <span>+${{ totalIngresos | number:'1.2-2':'es' }}</span>
+            </div>
+            <div class="total-item egresos">
+                <span>Total Egresos:</span>
+                <span>-${{ totalEgresos | number:'1.2-2':'es' }}</span>
+            </div>
+            <div class="total-item">
+                <span>Balance del día:</span>
+                <span [ngClass]="{'positivo': totalIngresos - totalEgresos >= 0, 'negativo': totalIngresos - totalEgresos < 0}">
+                    ${{ (totalIngresos - totalEgresos) | number:'1.2-2':'es' }}
+                </span>
+            </div>
+            <div class="total-item">
+                <span>Total en cuentas:</span>
+                <span>${{ total | number:'1.2-2':'es' }}</span>
+            </div>
+        </div>
+    </nav>
+
+    <app-confirmar-eliminar-modal
+        *ngIf="movimientoAEliminar"
+        [movimiento]="movimientoAEliminar"
+        (confirmar)="confirmarEliminarMovimiento()"
+        (cancelar)="cancelarEliminarMovimiento()">
+    </app-confirmar-eliminar-modal>
+</div>

@@ -1,0 +1,83 @@
+<div class="modal-backdrop" (click)="onCancelar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h4><i class="bi bi-cash-stack"></i> Registrar Movimiento</h4>
+      <button class="close-btn" (click)="onCancelar()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>
+          <i class="bi bi-arrow-left-right"></i>
+          Tipo de Movimiento
+        </label>
+        <select [(ngModel)]="nuevoMovimiento.tipo" class="form-input">
+          <option value="INGRESO">Ingreso</option>
+          <option value="EGRESO">Egreso</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>
+          <i class="bi bi-wallet2"></i>
+          Cuenta
+        </label>
+        <select [(ngModel)]="nuevoMovimiento.cuentaId" class="form-input">
+          <option value="">Seleccione una cuenta</option>
+          <option *ngFor="let cuenta of cuentas" [value]="cuenta.id">
+            {{ cuenta.nombre }} - ${{ cuenta.saldo | number:'1.2-2':'es' }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>
+          <i class="bi bi-currency-dollar"></i>
+          Monto
+        </label>
+        <div class="input-group">
+          <div class="currency-wrapper">
+            <span class="currency-symbol">$</span>
+            <input type="number" 
+                   [(ngModel)]="nuevoMovimiento.monto" 
+                   class="form-input with-currency"
+                   placeholder="0.00"
+                   min="0"
+                   step="0.01">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>
+          <i class="bi bi-card-text"></i>
+          Descripción
+        </label>
+        <input type="text" 
+               [(ngModel)]="nuevoMovimiento.descripcion" 
+               class="form-input"
+               placeholder="Descripción del movimiento">
+      </div>
+      <div class="form-group">
+        <label>
+          <i class="bi bi-calendar"></i>
+          Fecha del Movimiento
+        </label>
+        <input type="date" 
+               [(ngModel)]="nuevoMovimiento.fecha" 
+               class="form-input"
+               [value]="nuevoMovimiento.fecha">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="onCancelar()">
+        <i class="bi bi-x-circle"></i>
+        <span>Cancelar</span>
+      </button>
+      <button class="btn-primary" 
+              (click)="onConfirmar()"
+              [disabled]="!nuevoMovimiento.cuentaId || !nuevoMovimiento.descripcion || nuevoMovimiento.monto <= 0">
+        <i class="bi bi-check-circle"></i>
+        <span>Guardar</span>
+      </button>
+    </div>
+  </div>
+</div> 

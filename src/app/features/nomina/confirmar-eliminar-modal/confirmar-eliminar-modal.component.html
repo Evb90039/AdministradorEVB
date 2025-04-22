@@ -1,0 +1,40 @@
+<div class="modal-backdrop" (click)="onCancelar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h4>
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        Confirmar Eliminación
+      </h4>
+      <button class="close-btn" (click)="onCancelar()">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p>¿Estás seguro que deseas eliminar este movimiento?</p>
+
+      <div class="movimiento-detalles">
+        <p><strong>Tipo:</strong> {{ movimiento.tipo === 'INGRESO' ? 'Ingreso' : 'Egreso' }}</p>
+        <p><strong>Monto:</strong> ${{ movimiento.monto | number:'1.2-2':'es' }}</p>
+        <p><strong>Descripción:</strong> {{ movimiento.descripcion }}</p>
+        <p><strong>Cuenta:</strong> {{ movimiento.cuentaNombre }}</p>
+      </div>
+
+      <p class="warning-text">
+        <i class="bi bi-exclamation-circle"></i>
+        Esta acción no se puede deshacer.
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="onCancelar()">
+        <i class="bi bi-x"></i>
+        Cancelar
+      </button>
+      <button class="btn-danger" (click)="onConfirmar()">
+        <i class="bi bi-trash"></i>
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div> 
