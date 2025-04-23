@@ -2,7 +2,9 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
+    min-height: 100vh;
+    position: relative;
 }
 
 h2 {
@@ -740,6 +742,8 @@ button:active:not(:disabled) {
   flex-direction: column;
   gap: 8px;
   margin: 16px 0;
+  margin-bottom: 100px;
+  padding-bottom: 20px;
 }
 
 .movimiento-item {
@@ -845,9 +849,12 @@ button:active:not(:disabled) {
 
 .buttons-container {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
-    margin-bottom: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 0 15px;
 }
 
 .movimientos-title {
@@ -864,9 +871,9 @@ button:active:not(:disabled) {
     left: 0;
     right: 0;
     background-color: #ffffff;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    padding: 15px 0;
     z-index: 1000;
-    padding: 10px 0;
 }
 
 .totales-content {
@@ -960,4 +967,21 @@ button:active:not(:disabled) {
     padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */
 }
 
+.new-movement-btn {
+    flex: 1;
+    max-width: 250px;
+    background-color: #3498db;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 
+span.current-date {
+  text-align: center;
+}
