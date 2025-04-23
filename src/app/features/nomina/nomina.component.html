@@ -123,6 +123,11 @@
                 </button>
             </div>
             <button class="new-movement-btn" 
+                    (click)="mostrarFormularioReporte()" 
+                    title="Generar Reporte">
+                <i class="bi bi-file-earmark-text"></i> Reporte de Gastos
+            </button>
+            <button class="new-movement-btn" 
                     (click)="mostrarFormularioMovimiento()" 
                     *ngIf="!mostrarFormMovimiento && cuentas.length > 0"
                     [disabled]="creandoMovimiento">
@@ -212,4 +217,10 @@
         (confirmar)="confirmarEliminarMovimiento()"
         (cancelar)="cancelarEliminarMovimiento()">
     </app-confirmar-eliminar-modal>
+
+    <app-reporte-gastos-modal
+        *ngIf="mostrarFormReporte"
+        (confirmar)="generarReporte($event)"
+        (cancelar)="cancelarReporte()">
+    </app-reporte-gastos-modal>
 </div>

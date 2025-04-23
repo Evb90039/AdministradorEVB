@@ -5,12 +5,14 @@ import { Cuenta } from './cuenta.interface';
 import { Movimiento } from './movimiento.interface';
 import { NominaService } from '../../services/nomina.service';
 import { MovimientosService } from '../../services/movimientos.service';
+import { ReporteService } from '../../services/reporte.service';
 import { Subscription } from 'rxjs';
 import localeEs from '@angular/common/locales/es';
 import { ConfirmarEliminarModalComponent } from './confirmar-eliminar-modal/confirmar-eliminar-modal.component';
 import { NuevaCuentaModalComponent } from './nueva-cuenta-modal/nueva-cuenta-modal.component';
 import { NuevoMovimientoModalComponent } from './nuevo-movimiento-modal/nuevo-movimiento-modal.component';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { ReporteGastosModalComponent } from './reporte-gastos-modal/reporte-gastos-modal.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -23,7 +25,8 @@ registerLocaleData(localeEs, 'es');
     ConfirmarEliminarModalComponent, 
     NuevaCuentaModalComponent,
     NuevoMovimientoModalComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    ReporteGastosModalComponent
   ],
   templateUrl: './nomina.component.html',
   styleUrls: ['./nomina.component.css'],
@@ -71,10 +74,12 @@ export class NominaComponent implements OnInit, OnDestroy {
 
   movimientoAEliminar: Movimiento | null = null;
   private errorTimeout: any;
+  mostrarFormReporte: boolean = false;
 
   constructor(
     private nominaService: NominaService,
-    private movimientosService: MovimientosService
+    private movimientosService: MovimientosService,
+    private reporteService: ReporteService
   ) {}
 
   ngOnInit() {
@@ -450,5 +455,30 @@ export class NominaComponent implements OnInit, OnDestroy {
       this.paginaActualCuentas++;
       this.actualizarPaginacionCuentas();
     }
+  }
+
+  mostrarFormularioReporte() {
+    this.mostrarFormReporte = true;
+  }
+
+  cancelarReporte() {
+    this.mostrarFormReporte = false;
+  }
+
+  async generarReporte(event: { fechaInicio: Date, fechaFin: Date }) {
+    try {
+      // Asegurarnos de que las fechas sean objetos Date
+      const fechaInicio = new Date(event.fechaInicio);
+      const fechaFin = new Date(event.fechaFin);
+      
+      const movimientos = await this.movimientosService.getMovimientosPorRango(fechaInicio, fechaFin).toPromise();
+      if (movimientos) {
+        await this.reporteService.generarReportePDF(movimientos, fechaInicio, fechaFin);
+      }
+    } catch (error) {
+      console.error('Error al generar el reporte:', error);
+      this.mostrarError('Error al generar el reporte. Por favor, intente nuevamente.');
+    }
+    this.mostrarFormReporte = false;
   }
 }

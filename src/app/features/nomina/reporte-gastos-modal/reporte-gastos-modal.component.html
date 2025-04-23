@@ -1,0 +1,35 @@
+<div class="modal">
+  <div class="modal-content">
+    <h2>Generar Reporte de Gastos</h2>
+    <form [formGroup]="reportForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="fechaInicio">Fecha Inicio</label>
+        <input type="date" id="fechaInicio" formControlName="fechaInicio">
+      </div>
+
+      <div class="form-group">
+        <label for="fechaFin">Fecha Fin</label>
+        <input type="date" id="fechaFin" formControlName="fechaFin">
+      </div>
+
+      <div class="form-group">
+        <label for="tipoMovimiento">Tipo de Movimiento</label>
+        <select id="tipoMovimiento" formControlName="tipoMovimiento">
+          <option *ngFor="let option of tipoMovimientoOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="categoria">Categoría</label>
+        <input type="text" id="categoria" formControlName="categoria" placeholder="Filtrar por categoría">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn-submit" [disabled]="!reportForm.valid">Generar Reporte</button>
+      </div>
+    </form>
+  </div>
+</div> 

@@ -21,6 +21,7 @@ export class MovimientosService {
   private readonly COLLECTION_NAME = 'movimientos';
   private movimientosUpdated = new BehaviorSubject<void>(undefined);
   movimientosUpdated$ = this.movimientosUpdated.asObservable();
+  private movimientos$ = new BehaviorSubject<Movimiento[]>([]);
 
   constructor(private firestore: Firestore) {}
 
@@ -121,5 +122,30 @@ export class MovimientosService {
       console.error('Error deleting movimiento:', error);
       throw error;
     }
+  }
+
+  getMovimientosPorRango(fechaInicio: Date, fechaFin: Date): Observable<Movimiento[]> {
+    const movimientosRef = collection(this.firestore, this.COLLECTION_NAME);
+    const inicio = new Date(fechaInicio);
+    inicio.setHours(0, 0, 0, 0);
+    const fin = new Date(fechaFin);
+    fin.setHours(23, 59, 59, 999);
+
+    const q = query(
+      movimientosRef,
+      where('fecha', '>=', inicio),
+      where('fecha', '<=', fin),
+      orderBy('fecha', 'desc')
+    );
+    
+    return from(getDocs(q)).pipe(
+      map(snapshot => 
+        snapshot.docs.map(doc => ({
+          ...(doc.data() as Movimiento),
+          id: doc.id,
+          fecha: (doc.data() as any).fecha.toDate()
+        }))
+      )
+    );
   }
 } 
