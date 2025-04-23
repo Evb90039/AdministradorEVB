@@ -2,6 +2,7 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    padding-bottom: 80px;
 }
 
 h2 {
@@ -854,6 +855,109 @@ button:active:not(:disabled) {
     color: #2c3e50;
     font-size: 1.5em;
     margin: 20px 0;
+}
+
+/* Estilos base del footer */
+.totales-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px 0;
+}
+
+.totales-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.total-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.total-item span:first-child {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.total-item span:last-child {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-item.ingresos span:last-child {
+    color: #28a745;
+}
+
+.total-item.egresos span:last-child {
+    color: #dc3545;
+}
+
+/* Estilos responsivos para el footer */
+@media (max-width: 768px) {
+    .totales-footer {
+        padding: 10px;
+    }
+
+    .totales-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 0;
+    }
+
+    .total-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .total-item span:first-child {
+        font-size: 0.75rem;
+        color: #666;
+    }
+
+    .total-item span:last-child {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .totales-content {
+        grid-template-columns: 1fr;
+    }
+
+    .total-item {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .total-item span:first-child {
+        font-size: 0.75rem;
+    }
+
+    .total-item span:last-child {
+        font-size: 0.9rem;
+    }
+}
+
+/* Ajuste para el contenido principal para que no se oculte detrás del footer */
+.container {
+    padding-bottom: 80px; /* Ajusta este valor según la altura de tu footer */
 }
 
 
