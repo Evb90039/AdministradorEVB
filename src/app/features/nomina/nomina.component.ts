@@ -10,6 +10,7 @@ import localeEs from '@angular/common/locales/es';
 import { ConfirmarEliminarModalComponent } from './confirmar-eliminar-modal/confirmar-eliminar-modal.component';
 import { NuevaCuentaModalComponent } from './nueva-cuenta-modal/nueva-cuenta-modal.component';
 import { NuevoMovimientoModalComponent } from './nuevo-movimiento-modal/nuevo-movimiento-modal.component';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -21,7 +22,8 @@ registerLocaleData(localeEs, 'es');
     FormsModule, 
     ConfirmarEliminarModalComponent, 
     NuevaCuentaModalComponent,
-    NuevoMovimientoModalComponent
+    NuevoMovimientoModalComponent,
+    SpinnerComponent
   ],
   templateUrl: './nomina.component.html',
   styleUrls: ['./nomina.component.css'],
@@ -35,7 +37,7 @@ export class NominaComponent implements OnInit, OnDestroy {
   totalPaginasCuentas: number = 1;
   cuentaEditando: Cuenta | null = null;
   saldoTemporal: number = 0;
-  saldoAAgregar: number = 0;
+  saldoAAgregar: number | null = 0;
   total: number = 0;
   error: string = '';
   mostrarFormNuevaCuenta: boolean = false;
@@ -68,6 +70,7 @@ export class NominaComponent implements OnInit, OnDestroy {
   totalEgresos: number = 0;
 
   movimientoAEliminar: Movimiento | null = null;
+  private errorTimeout: any;
 
   constructor(
     private nominaService: NominaService,
@@ -96,17 +99,33 @@ export class NominaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
+  }
+
+  // Método para manejar errores
+  private mostrarError(mensaje: string) {
+    // Limpiar timeout anterior si existe
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
+    
+    this.error = mensaje;
+    
+    // Establecer nuevo timeout
+    this.errorTimeout = setTimeout(() => {
+      this.error = '';
+    }, 5000);
   }
 
   cargarCuentas() {
     console.log('Iniciando carga de cuentas...');
     this.cargando = true;
-    this.error = '';
 
     const cuentasSub = this.nominaService.getCuentas().subscribe({
       next: (cuentas) => {
         console.log('Cuentas recibidas en el componente:', cuentas);
-        // Ordenar cuentas por saldo de mayor a menor
         this.cuentas = cuentas.sort((a, b) => (b.saldo || 0) - (a.saldo || 0));
         this.calcularTotal();
         this.actualizarPaginacionCuentas();
@@ -116,23 +135,22 @@ export class NominaComponent implements OnInit, OnDestroy {
       error: (error: any) => {
         console.error('Error en la suscripción de cuentas:', error);
         
-        // Handle Firebase specific errors
         if (error.name === 'FirebaseError') {
           switch (error.code) {
             case 'failed-precondition':
-              this.error = 'Error de inicialización de Firebase. Por favor, contacte al administrador.';
+              this.mostrarError('Error de inicialización de Firebase. Por favor, contacte al administrador.');
               break;
             case 'permission-denied':
-              this.error = 'No tiene permisos para acceder a los datos. Por favor, verifique su sesión.';
+              this.mostrarError('No tiene permisos para acceder a los datos. Por favor, verifique su sesión.');
               break;
             case 'unavailable':
-              this.error = 'Servicio no disponible. Por favor, verifique su conexión a internet.';
+              this.mostrarError('Servicio no disponible. Por favor, verifique su conexión a internet.');
               break;
             default:
-              this.error = `Error de Firebase: ${error.message}`;
+              this.mostrarError(`Error de Firebase: ${error.message}`);
           }
         } else {
-          this.error = 'Error al cargar las cuentas. Por favor, intente nuevamente.';
+          this.mostrarError('Error al cargar las cuentas. Por favor, intente nuevamente.');
         }
         
         this.cargando = false;
@@ -148,15 +166,23 @@ export class NominaComponent implements OnInit, OnDestroy {
     console.log('Total calculado:', this.total);
   }
 
-  editarCuenta(cuenta: Cuenta) {
+  agregarsaldo(cuenta: Cuenta) {
     this.cuentaEditando = cuenta;
     this.saldoTemporal = cuenta.saldo;
     this.saldoAAgregar = 0;
     this.error = '';
   }
 
+  editarCuenta(cuenta: Cuenta) {
+    this.cuentaEditando = cuenta;
+    this.saldoTemporal = cuenta.saldo;
+    this.saldoAAgregar = null;
+    this.error = '';
+  }
+
   async guardarCambios(cuenta: Cuenta) {
     if (this.cuentaEditando && cuenta.id) {
+      this.cargando = true;
       try {
         await this.nominaService.actualizarSaldo(cuenta.id, this.saldoTemporal);
         cuenta.saldo = this.saldoTemporal;
@@ -165,15 +191,18 @@ export class NominaComponent implements OnInit, OnDestroy {
         this.error = '';
       } catch (error) {
         console.error('Error al guardar los cambios:', error);
-        this.error = 'Error al guardar los cambios. Por favor, intente nuevamente.';
+        this.mostrarError('Error al guardar los cambios. Por favor, intente nuevamente.');
+      } finally {
+        this.cargando = false;
       }
     }
   }
 
   async agregarSaldo(cuenta: Cuenta) {
     if (cuenta.id && this.saldoAAgregar) {
+      this.cargando = true;
       try {
-        const nuevoSaldo = (cuenta.saldo || 0) + this.saldoAAgregar;
+        const nuevoSaldo = cuenta.saldo + this.saldoAAgregar;
         await this.nominaService.actualizarSaldo(cuenta.id, nuevoSaldo);
         cuenta.saldo = nuevoSaldo;
         this.calcularTotal();
@@ -182,7 +211,9 @@ export class NominaComponent implements OnInit, OnDestroy {
         this.error = '';
       } catch (error) {
         console.error('Error al agregar saldo:', error);
-        this.error = 'Error al agregar saldo. Por favor, intente nuevamente.';
+        this.mostrarError('Error al agregar saldo. Por favor, intente nuevamente.');
+      } finally {
+        this.cargando = false;
       }
     }
   }
@@ -217,6 +248,7 @@ export class NominaComponent implements OnInit, OnDestroy {
   cancelarEdicion() {
     this.cuentaEditando = null;
     this.saldoAAgregar = 0;
+    this.saldoTemporal = 0;
     this.error = '';
   }
 
@@ -224,16 +256,19 @@ export class NominaComponent implements OnInit, OnDestroy {
     if (!cuenta.id) return;
     
     if (cuenta.saldo !== 0) {
-      this.error = 'No se puede eliminar una cuenta con saldo.';
+      this.mostrarError('No se puede eliminar una cuenta con saldo.');
       return;
     }
 
+    this.cargando = true;
     try {
       await this.nominaService.eliminarCuenta(cuenta.id);
       this.error = '';
     } catch (error: any) {
       console.error('Error al eliminar cuenta:', error);
-      this.error = 'Error al eliminar la cuenta. Por favor, intente nuevamente.';
+      this.mostrarError('Error al eliminar la cuenta. Por favor, intente nuevamente.');
+    } finally {
+      this.cargando = false;
     }
   }
 
@@ -247,7 +282,7 @@ export class NominaComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error al cargar movimientos:', error);
-          this.error = 'Error al cargar los movimientos.';
+          this.mostrarError('Error al cargar los movimientos.');
         }
       });
   }
@@ -277,7 +312,7 @@ export class NominaComponent implements OnInit, OnDestroy {
 
   async crearMovimiento(nuevoMovimiento: { tipo: 'INGRESO' | 'EGRESO', monto: number, descripcion: string, cuentaId: string, fecha: string }) {
     if (!nuevoMovimiento.cuentaId || !nuevoMovimiento.descripcion || nuevoMovimiento.monto <= 0) {
-      this.error = 'Por favor, complete todos los campos correctamente.';
+      this.mostrarError('Por favor, complete todos los campos correctamente.');
       return;
     }
 

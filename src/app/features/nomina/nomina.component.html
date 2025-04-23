@@ -5,6 +5,8 @@
         {{ error }}
     </div>
 
+    <app-spinner *ngIf="cargando"></app-spinner>
+
     <!-- Sección de Cuentas -->
     <div class="section-header">
         <h3>Cuentas</h3>
@@ -53,17 +55,17 @@
                         <span>$</span>
                         <span>{{ cuenta.saldo | number:'1.2-2' }}</span>
                     </div>
-                    <div class="button-group" *ngIf="cuenta.saldo === 0">
-                        <button class="add-btn" (click)="editarCuenta(cuenta)">
-                            <i class="fas fa-plus"></i> Agregar Saldo
+                    <div class="button-group">
+                        <button class="add-btn" (click)="agregarsaldo(cuenta)" title="Agregar Saldo">
+                            <i class="bi bi-plus-lg"></i>
                         </button>
-                        <button class="edit-btn" (click)="editarCuenta(cuenta)">
-                            <i class="fas fa-edit"></i> Editar
+                        <button class="edit-btn" (click)="editarCuenta(cuenta)" title="Editar">
+                            <i class="bi bi-pencil-fill"></i>
                         </button>
                         <button class="delete-btn" 
                                 (click)="eliminarCuenta(cuenta)"
                                 title="Eliminar cuenta">
-                            <i class="fas fa-trash"></i> Eliminar
+                            <i class="bi bi-trash-fill"></i>
                         </button>
                     </div>
                 </ng-container>
@@ -72,23 +74,34 @@
                         <div class="input-group">
                             <span>$</span>
                             <input type="number" 
-                                   [(ngModel)]="saldoAAgregar" 
+                                   *ngIf="saldoAAgregar !== null"
+                                   [(ngModel)]="saldoAAgregar"
                                    class="saldo-input"
                                    placeholder="Monto a agregar">
+                            <input type="number" 
+                                   *ngIf="saldoAAgregar === null"
+                                   [(ngModel)]="saldoTemporal"
+                                   class="saldo-input"
+                                   placeholder="Nuevo saldo">
                         </div>
                         <div class="saldo-actual">
                             Saldo actual: ${{ cuenta.saldo | number:'1.2-2' }}
                         </div>
-                        <div class="saldo-nuevo" *ngIf="saldoAAgregar">
+                        <div class="saldo-nuevo" *ngIf="saldoAAgregar !== null && saldoAAgregar > 0">
                             Nuevo saldo: ${{ (cuenta.saldo + saldoAAgregar) | number:'1.2-2' }}
+                        </div>
+                        <div class="saldo-nuevo" *ngIf="saldoAAgregar === null">
+                            Nuevo saldo: ${{ saldoTemporal | number:'1.2-2' }}
                         </div>
                     </div>
                     <div class="edit-buttons">
-                        <button class="save-btn" (click)="agregarSaldo(cuenta)" [disabled]="!saldoAAgregar">
-                            <i class="fas fa-save"></i> Agregar
+                        <button class="save-btn" 
+                                (click)="saldoAAgregar !== null ? agregarSaldo(cuenta) : guardarCambios(cuenta)" 
+                                [disabled]="saldoAAgregar !== null ? !saldoAAgregar : saldoTemporal === cuenta.saldo">
+                            <i class="bi bi-check-lg"></i> {{ saldoAAgregar !== null ? 'Agregar' : 'Guardar' }}
                         </button>
                         <button class="cancel-btn" (click)="cancelarEdicion()">
-                            <i class="fas fa-times"></i> Cancelar
+                            <i class="bi bi-x-lg"></i> Cancelar
                         </button>
                     </div>
                 </ng-template>
