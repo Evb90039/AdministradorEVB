@@ -108,11 +108,23 @@
             </div>
         </div>
     </div>
-
+<div class="buttons-container">
+    <button class="new-movement-btn" 
+        (click)="mostrarFormularioReporte()" 
+        title="Generar Reporte">
+        <i class="bi bi-file-earmark-text"></i> Reporte de Gastos
+    </button>
+    <button class="new-movement-btn" 
+        (click)="mostrarFormularioMovimiento()" 
+        *ngIf="!mostrarFormMovimiento && cuentas.length > 0"
+        [disabled]="creandoMovimiento">
+        <i class="bi bi-plus"></i> Nuevo Movimiento
+    </button>
+</div>
     <!-- Sección de Movimientos -->
     <div *ngIf="cuentas.length > 0">
+        <h3 class="movimientos-title">Movimientos del Día</h3>
         <div class="section-header movimientos-header">
-            <h3>Movimientos del Día</h3>
             <div class="date-navigation">
                 <button class="nav-btn" (click)="cambiarFecha(-1)" title="Día anterior">
                     <i class="bi bi-arrow-left"></i>
@@ -122,17 +134,6 @@
                     <i class="bi bi-arrow-right"></i>
                 </button>
             </div>
-            <button class="new-movement-btn" 
-                    (click)="mostrarFormularioReporte()" 
-                    title="Generar Reporte">
-                <i class="bi bi-file-earmark-text"></i> Reporte de Gastos
-            </button>
-            <button class="new-movement-btn" 
-                    (click)="mostrarFormularioMovimiento()" 
-                    *ngIf="!mostrarFormMovimiento && cuentas.length > 0"
-                    [disabled]="creandoMovimiento">
-                <i class="bi bi-plus"></i> Nuevo Movimiento
-            </button>
         </div>
         <!-- Paginación -->
         <div class="paginacion" *ngIf="movimientos.length > 2">
